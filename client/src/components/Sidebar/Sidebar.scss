@@ -1,0 +1,25 @@
+@use '../../styles/base/variables';
+
+.sidebar {
+  gap: 30px;
+  background: variables.$surface;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar nav {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.sidebar a {
+  color: variables.$text;
+  text-decoration: none;
+  transition: variables.$transition;
+
+  .sidebar a:hover {
+    background-color: variables.$primary;
+  }
+}

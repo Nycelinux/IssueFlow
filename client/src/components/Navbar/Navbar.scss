@@ -1,0 +1,36 @@
+@use '../../styles/base/variables';
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+
+  .navbar__links {
+    display: flex;
+    gap: 20px;
+
+    a {
+      color: variables.$text;
+      text-decoration: none;
+      transition: variables.$transition;
+
+      &:hover {
+        color: variables.$primary;
+      }
+    }
+  }
+}
+
+.navbar button {
+  background: variables.$primary;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  padding: 12px 20px;
+  cursor: pointer;
+
+  &:hover {
+    background: variables.$surface-hover;
+  }
+}
