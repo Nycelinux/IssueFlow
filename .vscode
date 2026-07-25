@@ -1,0 +1,10 @@
+{
+  "editor.formatOnSave": true,
+  "editor.minimap.enabled": false,
+  "editor.bracketPairColorization.enabled": true,
+  "editor.guides.bracketPairs": true,
+  "editor.renderWhitespace": "selection",
+  "editor.wordWrap": "on",
+  "explorer.compactFolders": false,
+  "files.autoSave": "afterDelay"
+}

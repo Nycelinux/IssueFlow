@@ -8,3 +8,25 @@
     margin-top: 0px;
   }
 }
+
+.priority {
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-weight: bold;
+
+  &.low {
+    background-color: #10b981; /* Green */
+  }
+
+  &.medium {
+    background-color: #f59e0b; /* Yellow */
+  }
+
+  &.high {
+    background-color: #ef7544; /* Red */
+  }
+
+  &.critical {
+    background-color: #b91c1c; /* Dark Red */
+  }
+}
