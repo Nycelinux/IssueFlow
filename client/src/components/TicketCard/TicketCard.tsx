@@ -1,33 +1,27 @@
-import { tickets } from '../../data/tickets';
 import './TicketCard.scss';
+import type { Ticket } from '../../types/ticket';
 
 interface TicketCardProps {
-  id: number;
-  title: string;
-  description: string;
-  priority: string;
-  status: string;
+  ticket: Ticket;
   onDelete?: (id: number) => void;
   onToggleStatus?: (id: number) => void;
+  onEdit?: (id: number) => void;
 }
 
-const TicketCard: React.FC<TicketCardProps> = ({
-  id,
-  title,
-  description,
-  priority,
-  status,
-  onDelete,
-  onToggleStatus,
-}) => {
+const TicketCard: React.FC<TicketCardProps> = ({ ticket, onDelete, onEdit, onToggleStatus }) => {
   return (
     <div className="ticket-card">
-      <h3>{title}</h3>
-      <p>{description}</p>
-      <span className={`priority ${priority.toLowerCase()}`}>Priority: {priority}</span>
-      <p>Status: {status}</p>
-      <button onClick={() => onDelete?.(id)}>Delete</button>
-      <button onClick={() => onToggleStatus?.(id)}>Change status</button>
+      <h3>{ticket.title}</h3>
+      <p>{ticket.description}</p>
+      <span className={`priority ${ticket.priority.toLowerCase()}`}>
+        Priority: {ticket.priority}
+      </span>
+      <p>Status: {ticket.status}</p>
+      <div className="ticket-actions">
+        <button onClick={() => onDelete?.(ticket.id)}>Delete</button>
+        <button onClick={() => onEdit?.(ticket.id)}>Edit</button>
+        <button onClick={() => onToggleStatus?.(ticket.id)}>Change status</button>
+      </div>
     </div>
   );
 };

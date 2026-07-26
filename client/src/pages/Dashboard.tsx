@@ -7,15 +7,18 @@ import { tickets as initialTickets } from '../data/tickets';
 import AddTicketForm from '../components/AddTicketForm/AddTicketForm';
 import type { Ticket } from '../types/ticket';
 import SearchBar from '../components/SearchBar/SearchBar';
+import { getTicketStatistics } from '../components/utils/statistics';
+import { searchTickets } from '../components/utils/search';
+import Modal from '../components/Modal/Modal';
 
 function Dashboard() {
   const [tickets, setTickets] = useState(initialTickets);
   const [search, setSearch] = useState('');
   const [showAddTicketForm, setShowAddTicketForm] = useState(false);
-  const openTickets = tickets.filter((ticket) => ticket.status === 'Open').length;
-  const closedTickets = tickets.filter((ticket) => ticket.status === 'Closed').length;
-  const progressTickets = tickets.filter((ticket) => ticket.status === 'In Progress').length;
-  const criticalTickets = tickets.filter((ticket) => ticket.priority === 'Critical').length;
+  const [editingTicket, setEditingTicket] = useState<Ticket | null>(null);
+  const statistics = getTicketStatistics(tickets);
+  const filteredTickets = searchTickets(tickets, search);
+
   function addTicket(title: string, description: string, priority: Ticket['priority']) {
     const newTicket: Ticket = {
       id: Date.now(),
@@ -29,6 +32,50 @@ function Dashboard() {
   function deleteTicket(id: number) {
     setTickets((previousTickets) => previousTickets.filter((ticket) => ticket.id !== id));
   }
+  function handleEdit(id: number) {
+    const ticketToEdit = tickets.find((ticket) => ticket.id === id);
+    if (ticketToEdit) {
+      setEditingTicket(ticketToEdit);
+    }
+  }
+
+  function saveEditedTicket(updatedTicket: Ticket) {
+    setTickets((previousTickets) =>
+      previousTickets.map((ticket) => (ticket.id === updatedTicket.id ? updatedTicket : ticket)),
+    );
+    setEditingTicket(null);
+  }
+
+  function updateTicket(
+    id: number,
+    title: string,
+    description: string,
+    priority: Ticket['priority'],
+  ) {
+    setTickets((previousTicket) =>
+      previousTicket.map((ticket) =>
+        ticket.id === id
+          ? {
+              ...ticket,
+              title,
+              description,
+              priority,
+            }
+          : ticket,
+      ),
+    );
+    setEditingTicket(null);
+  }
+
+  function handleSaveTicket(title: string, description: string, priority: Ticket['priority']) {
+    if (!editingTicket) {
+      addTicket(title, description, priority);
+      return;
+    }
+    updateTicket(editingTicket.id, title, description, priority);
+    setShowAddTicketForm(false);
+  }
+
   function toggleTicketStatus(id: number) {
     setTickets((previousTickets) =>
       previousTickets.map((ticket) =>
@@ -55,28 +102,59 @@ function Dashboard() {
         <SearchBar value={search} onChange={(e) => setSearch(e.target.value)} />
         <h1>Issue Flow</h1>
         <section className="statistics-grid">
-          <StatisticsCard title="Open Tickets" value={openTickets} />
-          <StatisticsCard title="In Progress" value={progressTickets} />
-          <StatisticsCard title="Closed Tickets" value={closedTickets} />
-          <StatisticsCard title="Critical Tickets" value={criticalTickets} />
+          <StatisticsCard title="Open Tickets" value={statistics.openTickets} />
+          <StatisticsCard title="In Progress" value={statistics.progressTickets} />
+          <StatisticsCard title="Closed Tickets" value={statistics.closedTickets} />
+          <StatisticsCard title="Critical Tickets" value={statistics.criticalTickets} />
         </section>
         <section>
-          {showAddTicketForm && <AddTicketForm onAddTicket={addTicket} />}
-
-          {tickets
-            .filter((ticket) => ticket.title.toLowerCase().includes(search.toLowerCase()))
-            .map((ticket) => (
+          <Modal
+            isOpen={showAddTicketForm}
+            title="Add New Ticket"
+            onClose={() => setShowAddTicketForm(false)}
+          >
+            <AddTicketForm
+              submitButtonText="Ceate Ticket"
+              onAddTicket={handleSaveTicket}
+              onClose={() => setShowAddTicketForm(false)}
+            />
+          </Modal>
+          <Modal
+            isOpen={editingTicket !== null}
+            title="Edit Ticket"
+            onClose={() => setEditingTicket(null)}
+          >
+            {editingTicket && (
+              <AddTicketForm
+                initialTicket={editingTicket}
+                submitButtonText="save changes"
+                onAddTicket={handleSaveTicket}
+                onClose={() => setEditingTicket(null)}
+              />
+            )}
+          </Modal>
+          {editingTicket && (
+            <div className="edit-ticket-form">
+              im dashboard ausgewählt zum editieren: <strong>{editingTicket.title}</strong>
+              <button onClick={() => setEditingTicket(null)}>Close</button>
+            </div>
+          )}
+          {filteredTickets.length === 0 ? (
+            <div className="empty-state">
+              <h2>No tickets found.</h2>
+              <p>Try adjusting your search or adding a new ticket.</p>
+            </div>
+          ) : (
+            filteredTickets.map((ticket) => (
               <TicketCard
                 key={ticket.id}
-                id={ticket.id}
                 onDelete={deleteTicket}
-                title={ticket.title}
-                description={ticket.description}
-                priority={ticket.priority}
-                status={ticket.status}
+                ticket={ticket}
+                onEdit={handleEdit}
                 onToggleStatus={toggleTicketStatus}
               />
-            ))}
+            ))
+          )}
         </section>
       </main>
     </div>
