@@ -1,27 +1,35 @@
 import Navbar from '../components/Navbar/Navbar';
 import Sidebar from '../components/Sidebar/Sidebar';
-import FilterBar from '../components/FilterBar/FilterBar';
 import StatisticsCard from '../components/StatisticsCard/StatisticsCard';
 import TicketCard from '../components/TicketCard/TicketCard';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { tickets as initialTickets } from '../data/tickets';
 import AddTicketForm from '../components/AddTicketForm/AddTicketForm';
 import type { Ticket } from '../types/ticket';
-import SearchBar from '../components/SearchBar/SearchBar';
 import { getTicketStatistics } from '../components/utils/statistics';
 import { searchTickets } from '../components/utils/search';
 import Modal from '../components/Modal/Modal';
 import { filterTickets } from '../components/utils/filter';
 import { sortTickets } from '../components/utils/sort';
+import Toolbar from '../components/Toolbar/Toolbar';
+import Toast from '../components/Toast/Toast';
+import { saveTickets, loadTickets } from '../components/utils/storage';
 
 function Dashboard() {
-  const [tickets, setTickets] = useState(initialTickets);
+  const [tickets, setTickets] = useState(() => {
+    return loadTickets() ?? initialTickets;
+  });
   const [search, setSearch] = useState('');
+  const [toastMessage, setToastMessage] = useState('');
   const [showAddTicketForm, setShowAddTicketForm] = useState(false);
   const [sortBy, setSortBy] = useState<'Newest' | 'Oldest' | 'Priority'>('Newest');
   const [editingTicket, setEditingTicket] = useState<Ticket | null>(null);
   const [priorityFilter, setPriorityFilter] = useState<'All' | Ticket['priority']>('All');
   const [statusFilter, setStatusFilter] = useState<'All' | Ticket['status']>('All');
+  useEffect(() => {
+    saveTickets(tickets);
+  }, [tickets]);
+
   const statistics = getTicketStatistics(tickets);
   const searchedTickets = searchTickets(tickets, search);
   const filteredTickets = filterTickets(searchedTickets, priorityFilter, statusFilter);
@@ -36,9 +44,11 @@ function Dashboard() {
       status: 'Open',
     };
     setTickets((previousTickets) => [newTicket, ...previousTickets]);
+    showToast(' Ticket created');
   }
   function deleteTicket(id: number) {
     setTickets((previousTickets) => previousTickets.filter((ticket) => ticket.id !== id));
+    showToast('ticket deleted');
   }
   function handleEdit(id: number) {
     const ticketToEdit = tickets.find((ticket) => ticket.id === id);
@@ -73,6 +83,7 @@ function Dashboard() {
       ),
     );
     setEditingTicket(null);
+    showToast('Ticket updated');
   }
 
   function handleSaveTicket(title: string, description: string, priority: Ticket['priority']) {
@@ -82,6 +93,13 @@ function Dashboard() {
     }
     updateTicket(editingTicket.id, title, description, priority);
     setShowAddTicketForm(false);
+  }
+
+  function showToast(message: string) {
+    setToastMessage(message);
+    setTimeout(() => {
+      setToastMessage('');
+    }, 3000);
   }
 
   function toggleTicketStatus(id: number) {
@@ -107,14 +125,16 @@ function Dashboard() {
       <Sidebar />
       <main>
         <Navbar onNewTicket={() => setShowAddTicketForm(true)} />
-        <SearchBar value={search} onChange={(e) => setSearch(e.target.value)} />
-        <FilterBar
+        <Toolbar
+          search={search}
+          onSearchChange={(e) => setSearch(e.target.value)}
           priority={priorityFilter}
           status={statusFilter}
           sortBy={sortBy}
           onPriorityChange={setPriorityFilter}
           onStatusChange={setStatusFilter}
           onSortChange={setSortBy}
+          ticketCount={visibleTickets.length}
         />
         <h1>Issue Flow</h1>
         <section className="statistics-grid">
@@ -149,38 +169,24 @@ function Dashboard() {
               />
             )}
           </Modal>
-          {editingTicket && (
-            <div className="edit-ticket-form">
-              im dashboard ausgewählt zum editieren: <strong>{editingTicket.title}</strong>
-              <button onClick={() => setEditingTicket(null)}>Close</button>
-            </div>
-          )}
-          {filteredTickets.length === 0 ? (
+          {visibleTickets.length === 0 ? (
             <div className="empty-state">
               <h2>No tickets found.</h2>
               <p>Try adjusting your search or adding a new ticket.</p>
             </div>
           ) : (
-            filteredTickets.map((ticket) => (
+            visibleTickets.map((ticket) => (
               <TicketCard
                 key={ticket.id}
-                onDelete={deleteTicket}
                 ticket={ticket}
+                onDelete={deleteTicket}
                 onEdit={handleEdit}
                 onToggleStatus={toggleTicketStatus}
               />
             ))
           )}
-          {visibleTickets.map((ticket) => (
-            <TicketCard
-              key={ticket.id}
-              ticket={ticket}
-              onDelete={deleteTicket}
-              onEdit={handleEdit}
-              onToggleStatus={toggleTicketStatus}
-            />
-          ))}
         </section>
+        {toastMessage && <Toast message={toastMessage} />}
       </main>
     </div>
   );

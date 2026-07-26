@@ -1,0 +1,13 @@
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 25px;
+}
+
+.ticket-counter {
+  opacity: 0.75;
+  font-size: 0.9rem;
+}
