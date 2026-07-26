@@ -14,11 +14,15 @@ import { sortTickets } from '../components/utils/sort';
 import Toolbar from '../components/Toolbar/Toolbar';
 import Toast from '../components/Toast/Toast';
 import { saveTickets, loadTickets } from '../components/utils/storage';
+import DashboardHeader from '../components/DashboardHeader/DashboardHeader';
+import ConfirmDialog from '../components/ConfirmDialog/ConfirmDialogPrompts';
+import TicketStatusChart from '../components/Charts/TicketStatusChart';
 
 function Dashboard() {
   const [tickets, setTickets] = useState(() => {
     return loadTickets() ?? initialTickets;
   });
+  const [deleteTicketId, setDeleteTicketId] = useState<number | null>(null);
   const [search, setSearch] = useState('');
   const [toastMessage, setToastMessage] = useState('');
   const [showAddTicketForm, setShowAddTicketForm] = useState(false);
@@ -29,6 +33,25 @@ function Dashboard() {
   useEffect(() => {
     saveTickets(tickets);
   }, [tickets]);
+
+  useEffect(() => {
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.ctrlKey && event.key === 'n') {
+        event.preventDefault();
+        setShowAddTicketForm(true);
+      }
+      if (event.key === 'Escape') {
+        setShowAddTicketForm(false);
+        setEditingTicket(null);
+        setDeleteTicketId(null);
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, []);
 
   const statistics = getTicketStatistics(tickets);
   const searchedTickets = searchTickets(tickets, search);
@@ -125,6 +148,7 @@ function Dashboard() {
       <Sidebar />
       <main>
         <Navbar onNewTicket={() => setShowAddTicketForm(true)} />
+        <DashboardHeader ticketCount={visibleTickets.length} />
         <Toolbar
           search={search}
           onSearchChange={(e) => setSearch(e.target.value)}
@@ -136,12 +160,18 @@ function Dashboard() {
           onSortChange={setSortBy}
           ticketCount={visibleTickets.length}
         />
-        <h1>Issue Flow</h1>
         <section className="statistics-grid">
           <StatisticsCard title="Open Tickets" value={statistics.openTickets} />
           <StatisticsCard title="In Progress" value={statistics.progressTickets} />
           <StatisticsCard title="Closed Tickets" value={statistics.closedTickets} />
           <StatisticsCard title="Critical Tickets" value={statistics.criticalTickets} />
+        </section>
+        <section className="chart-container">
+          <TicketStatusChart
+            open={statistics.openTickets}
+            progress={statistics.progressTickets}
+            closed={statistics.closedTickets}
+          />
         </section>
         <section>
           <Modal
@@ -169,6 +199,18 @@ function Dashboard() {
               />
             )}
           </Modal>
+          <ConfirmDialog
+            isOpen={deleteTicketId !== null}
+            title="Delete Ticket"
+            message="Are you sure youwant to Delete ths Ticket?"
+            onCancel={() => setDeleteTicketId(null)}
+            onConfirm={() => {
+              if (deleteTicketId !== null) {
+                deleteTicket(deleteTicketId);
+                setDeleteTicketId(null);
+              }
+            }}
+          />
           {visibleTickets.length === 0 ? (
             <div className="empty-state">
               <h2>No tickets found.</h2>
@@ -179,7 +221,7 @@ function Dashboard() {
               <TicketCard
                 key={ticket.id}
                 ticket={ticket}
-                onDelete={deleteTicket}
+                onDelete={(id) => setDeleteTicketId(id)}
                 onEdit={handleEdit}
                 onToggleStatus={toggleTicketStatus}
               />

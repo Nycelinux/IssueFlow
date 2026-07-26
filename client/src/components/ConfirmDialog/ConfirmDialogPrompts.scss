@@ -1,0 +1,14 @@
+.confirm-dialog-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 15px;
+  margin-top: 30px;
+}
+
+.cancel-button {
+  background: #374152;
+}
+
+.delete-button {
+  background: #dc2626;
+}
