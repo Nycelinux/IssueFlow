@@ -1,5 +1,6 @@
 import Navbar from '../components/Navbar/Navbar';
 import Sidebar from '../components/Sidebar/Sidebar';
+import FilterBar from '../components/FilterBar/FilterBar';
 import StatisticsCard from '../components/StatisticsCard/StatisticsCard';
 import TicketCard from '../components/TicketCard/TicketCard';
 import { useState } from 'react';
@@ -10,14 +11,21 @@ import SearchBar from '../components/SearchBar/SearchBar';
 import { getTicketStatistics } from '../components/utils/statistics';
 import { searchTickets } from '../components/utils/search';
 import Modal from '../components/Modal/Modal';
+import { filterTickets } from '../components/utils/filter';
+import { sortTickets } from '../components/utils/sort';
 
 function Dashboard() {
   const [tickets, setTickets] = useState(initialTickets);
   const [search, setSearch] = useState('');
   const [showAddTicketForm, setShowAddTicketForm] = useState(false);
+  const [sortBy, setSortBy] = useState<'Newest' | 'Oldest' | 'Priority'>('Newest');
   const [editingTicket, setEditingTicket] = useState<Ticket | null>(null);
+  const [priorityFilter, setPriorityFilter] = useState<'All' | Ticket['priority']>('All');
+  const [statusFilter, setStatusFilter] = useState<'All' | Ticket['status']>('All');
   const statistics = getTicketStatistics(tickets);
-  const filteredTickets = searchTickets(tickets, search);
+  const searchedTickets = searchTickets(tickets, search);
+  const filteredTickets = filterTickets(searchedTickets, priorityFilter, statusFilter);
+  const visibleTickets = sortTickets(filteredTickets, sortBy);
 
   function addTicket(title: string, description: string, priority: Ticket['priority']) {
     const newTicket: Ticket = {
@@ -100,6 +108,14 @@ function Dashboard() {
       <main>
         <Navbar onNewTicket={() => setShowAddTicketForm(true)} />
         <SearchBar value={search} onChange={(e) => setSearch(e.target.value)} />
+        <FilterBar
+          priority={priorityFilter}
+          status={statusFilter}
+          sortBy={sortBy}
+          onPriorityChange={setPriorityFilter}
+          onStatusChange={setStatusFilter}
+          onSortChange={setSortBy}
+        />
         <h1>Issue Flow</h1>
         <section className="statistics-grid">
           <StatisticsCard title="Open Tickets" value={statistics.openTickets} />
@@ -155,6 +171,15 @@ function Dashboard() {
               />
             ))
           )}
+          {visibleTickets.map((ticket) => (
+            <TicketCard
+              key={ticket.id}
+              ticket={ticket}
+              onDelete={deleteTicket}
+              onEdit={handleEdit}
+              onToggleStatus={toggleTicketStatus}
+            />
+          ))}
         </section>
       </main>
     </div>
