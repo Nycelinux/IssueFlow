@@ -22,6 +22,7 @@ function TicketStatusChart({ open, progress, closed }: TicketStatusChartProps) {
             <Cell key={index} fill={COLORS[index]} />
           ))}
         </Pie>
+        <Tooltip />
       </PieChart>
     </ResponsiveContainer>
   );
