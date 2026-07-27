@@ -1,9 +1,13 @@
 import { Request, Response } from "express";
 import * as ticketService from "../services/ticketService.js";
 
-export function getTickets(req: Request, res: Response) {
-  const tickets = ticketService.getAllTickets();
-  res.json(tickets);
+export async function getTickets(req: Request, res: Response) {
+  try {
+    const tickets = await ticketService.getAllTickets();
+    res.json(tickets);
+  } catch {
+    res.sendStatus(500);
+  }
 }
 
 export function getSingleTicket(req: Request, res: Response) {
@@ -15,10 +19,17 @@ export function getSingleTicket(req: Request, res: Response) {
   res.json(ticket);
 }
 
-export function createTicket(req: Request, res: Response) {
-  const { title, description, priority } = req.body;
-  const ticket = ticketService.createTicket(title, description, priority);
-  res.status(201).json(ticket);
+export async function createTicket(req: Request, res: Response) {
+  try {
+    const ticket = await ticketService.createTicket(
+      req.body.title,
+      req.body.description,
+      req.body.priority,
+    );
+    res.status(201).json(ticket);
+  } catch {
+    res.sendStatus(500);
+  }
 }
 
 export function deleteTicket(req: Request, res: Response) {

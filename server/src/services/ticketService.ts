@@ -1,3 +1,6 @@
+import { error } from "node:console";
+import { db } from "../database/database.js";
+
 interface Ticket {
   id: number;
   title: string;
@@ -23,8 +26,16 @@ const tickets: Ticket[] = [
   },
 ];
 
-export function getAllTickets() {
-  return tickets;
+export function getAllTickets(): Promise<Ticket[]> {
+  return new Promise((resolve, reject) => {
+    db.all("SELECT * FROM tickets", (error, rows: Ticket[]) => {
+      if (error) {
+        reject(error);
+        return;
+      }
+      resolve(rows);
+    });
+  });
 }
 
 export function getTicket(id: number) {
@@ -35,16 +46,28 @@ export function createTicket(
   title: string,
   description: string,
   priority: Ticket["priority"],
-): Ticket {
-  const newTicket: Ticket = {
-    id: Date.now(),
-    title,
-    description,
-    priority,
-    status: "Open",
-  };
-  tickets.push(newTicket);
-  return newTicket;
+): Promise<Ticket> {
+  return new Promise((resolve, reject) => {
+    db.run(
+      `INSERT INTO tickets
+      (title, description,priority,status)
+      VALUES(?,?,?,?)`,
+      [title, description, priority, "Open"],
+      function (error) {
+        if (error) {
+          reject(error);
+          return;
+        }
+        resolve({
+          id: this.lastID,
+          title,
+          description,
+          priority,
+          status: "Open",
+        });
+      },
+    );
+  });
 }
 
 export function deleteTicket(id: number): boolean {
