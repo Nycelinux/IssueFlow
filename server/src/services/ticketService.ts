@@ -1,5 +1,7 @@
 import { error } from "node:console";
 import { db } from "../database/database.js";
+import { resolve } from "node:dns";
+import { rejects } from "node:assert/strict";
 
 interface Ticket {
   id: number;
@@ -8,23 +10,6 @@ interface Ticket {
   priority: "Low" | "Medium" | "High";
   status: "Open" | "Closed";
 }
-
-const tickets: Ticket[] = [
-  {
-    id: 1,
-    title: "Navbar Bug",
-    description: "Bug in Navbar",
-    priority: "Medium",
-    status: "Open",
-  },
-  {
-    id: 2,
-    title: "Login Issue",
-    description: "No resl issue",
-    priority: "High",
-    status: "Closed",
-  },
-];
 
 export function getAllTickets(): Promise<Ticket[]> {
   return new Promise((resolve, reject) => {
@@ -38,8 +23,16 @@ export function getAllTickets(): Promise<Ticket[]> {
   });
 }
 
-export function getTicket(id: number) {
-  return tickets.find((ticket) => ticket.id === id);
+export function getTicket(id: number): Promise<Ticket | undefined> {
+  return new Promise((resolve, reject) => {
+    db.get(`SELECT * FROM tickets WHERE id =?`, [id], (error, row: Ticket) => {
+      if (error) {
+        reject(error);
+        return;
+      }
+      resolve(row);
+    });
+  });
 }
 
 export function createTicket(
@@ -70,13 +63,22 @@ export function createTicket(
   });
 }
 
-export function deleteTicket(id: number): boolean {
-  const index = tickets.findIndex((ticket) => ticket.id === id);
-  if (index === -1) {
-    return false;
-  }
-  tickets.splice(index, 1);
-  return true;
+export function deleteTicket(id: number): Promise<boolean> {
+  return new Promise((resolve, reject) => {
+    db.run(
+      `
+      DELETE FROM tickets WHERE id =?
+      `,
+      [id],
+      function (error) {
+        if (error) {
+          reject(error);
+          return;
+        }
+        resolve(this.changes > 0);
+      },
+    );
+  });
 }
 
 export function updateTicket(
@@ -85,14 +87,22 @@ export function updateTicket(
   description: string,
   priority: Ticket["priority"],
   status: Ticket["status"],
-): Ticket | undefined {
-  const ticket = tickets.find((ticket) => ticket.id === id);
-  if (!ticket) {
-    return undefined;
-  }
-  ticket.title = title;
-  ticket.description = description;
-  ticket.priority = priority;
-  ticket.status = status;
-  return ticket;
+): Promise<boolean> {
+  return new Promise((resolve, reject) => {
+    db.run(
+      `
+        UPDATE tickets
+        SET tile=?, description =?, priority=?, status=?
+        WHERE id=?
+      `,
+      [title, description, priority, status, id],
+      function (error) {
+        if (error) {
+          reject(error);
+          return;
+        }
+        resolve(this.changes > 0);
+      },
+    );
+  });
 }
