@@ -3,9 +3,7 @@ import Sidebar from '../components/Sidebar/Sidebar';
 import StatisticsCard from '../components/StatisticsCard/StatisticsCard';
 import TicketCard from '../components/TicketCard/TicketCard';
 import { useState, useEffect } from 'react';
-import { tickets as initialTickets } from '../data/tickets';
 import AddTicketForm from '../components/AddTicketForm/AddTicketForm';
-import type { Ticket } from '../types/ticket';
 import { getTicketStatistics } from '../components/utils/statistics';
 import { searchTickets } from '../components/utils/search';
 import Modal from '../components/Modal/Modal';
@@ -13,15 +11,20 @@ import { filterTickets } from '../components/utils/filter';
 import { sortTickets } from '../components/utils/sort';
 import Toolbar from '../components/Toolbar/Toolbar';
 import Toast from '../components/Toast/Toast';
-import { saveTickets, loadTickets } from '../components/utils/storage';
 import DashboardHeader from '../components/DashboardHeader/DashboardHeader';
 import ConfirmDialog from '../components/ConfirmDialog/ConfirmDialogPrompts';
 import TicketStatusChart from '../components/Charts/TicketStatusChart';
+import {
+  createticket,
+  getTickets,
+  deleteTicket as deleteTicketApi,
+  updateTicket as updateTicketApi,
+} from '../api/tickets';
+import type { Ticket } from '../types/ticket';
 
 function Dashboard() {
-  const [tickets, setTickets] = useState(() => {
-    return loadTickets() ?? initialTickets;
-  });
+  const [tickets, setTickets] = useState<Ticket[]>([]);
+
   const [deleteTicketId, setDeleteTicketId] = useState<number | null>(null);
   const [search, setSearch] = useState('');
   const [toastMessage, setToastMessage] = useState('');
@@ -30,9 +33,6 @@ function Dashboard() {
   const [editingTicket, setEditingTicket] = useState<Ticket | null>(null);
   const [priorityFilter, setPriorityFilter] = useState<'All' | Ticket['priority']>('All');
   const [statusFilter, setStatusFilter] = useState<'All' | Ticket['status']>('All');
-  useEffect(() => {
-    saveTickets(tickets);
-  }, [tickets]);
 
   useEffect(() => {
     function handleKeyDown(event: KeyboardEvent) {
@@ -53,25 +53,47 @@ function Dashboard() {
     };
   }, []);
 
+  useEffect(() => {
+    async function fetchTickets() {
+      try {
+        const data = await getTickets();
+        setTickets(data);
+      } catch (error) {
+        console.error(error);
+        showToast('Could not load Ticketss');
+      }
+    }
+    fetchTickets();
+  }, []);
+
   const statistics = getTicketStatistics(tickets);
   const searchedTickets = searchTickets(tickets, search);
   const filteredTickets = filterTickets(searchedTickets, priorityFilter, statusFilter);
   const visibleTickets = sortTickets(filteredTickets, sortBy);
 
-  function addTicket(title: string, description: string, priority: Ticket['priority']) {
-    const newTicket: Ticket = {
-      id: Date.now(),
-      title,
-      description,
-      priority,
-      status: 'Open',
-    };
-    setTickets((previousTickets) => [newTicket, ...previousTickets]);
-    showToast(' Ticket created');
+  async function addTicket(title: string, description: string, priority: Ticket['priority']) {
+    try {
+      const newTicket = await createticket({
+        title,
+        description,
+        priority,
+      });
+      setTickets((previousTickets) => [newTicket, ...previousTickets]);
+      showToast(' Ticket created');
+    } catch (error) {
+      console.error(error);
+      showToast('Creating ticket failed');
+    }
   }
-  function deleteTicket(id: number) {
-    setTickets((previousTickets) => previousTickets.filter((ticket) => ticket.id !== id));
-    showToast('ticket deleted');
+  async function deleteTicket(id: number) {
+    try {
+      await deleteTicketApi(id);
+      setTickets((previousTickets) => previousTickets.filter((ticket) => ticket.id !== id));
+      showToast('ticket deleted');
+    } catch (error) {
+      console.error(error);
+      showToast('delete failed');
+    }
   }
   function handleEdit(id: number) {
     const ticketToEdit = tickets.find((ticket) => ticket.id === id);
@@ -80,19 +102,21 @@ function Dashboard() {
     }
   }
 
-  function saveEditedTicket(updatedTicket: Ticket) {
-    setTickets((previousTickets) =>
-      previousTickets.map((ticket) => (ticket.id === updatedTicket.id ? updatedTicket : ticket)),
-    );
-    setEditingTicket(null);
-  }
-
-  function updateTicket(
+  async function updateTicket(
     id: number,
     title: string,
     description: string,
     priority: Ticket['priority'],
   ) {
+    const updatedTicket: Ticket = {
+      id,
+      title,
+      description,
+      priority,
+      status: editingTicket!.status,
+    };
+    await updateTicketApi(updatedTicket);
+
     setTickets((previousTicket) =>
       previousTicket.map((ticket) =>
         ticket.id === id
@@ -106,7 +130,7 @@ function Dashboard() {
       ),
     );
     setEditingTicket(null);
-    showToast('Ticket updated');
+    showToast('ticket updated');
   }
 
   function handleSaveTicket(title: string, description: string, priority: Ticket['priority']) {

@@ -7,8 +7,8 @@ interface Ticket {
   id: number;
   title: string;
   description: string;
-  priority: "Low" | "Medium" | "High";
-  status: "Open" | "Closed";
+  priority: "Low" | "Medium" | "High" | "Critical";
+  status: "Open" | "In Progress" | "Closed";
 }
 
 export function getAllTickets(): Promise<Ticket[]> {
@@ -92,7 +92,7 @@ export function updateTicket(
     db.run(
       `
         UPDATE tickets
-        SET tile=?, description =?, priority=?, status=?
+        SET title=?, description =?, priority=?, status=?
         WHERE id=?
       `,
       [title, description, priority, status, id],

@@ -61,7 +61,7 @@ export async function updateTicket(req: Request, res: Response) {
     if (!success) {
       return res.sendStatus(404);
     }
-    res.sendStatus(204);
+    res.sendStatus(204).json(updateTicket);
   } catch {
     res.sendStatus(500);
   }
