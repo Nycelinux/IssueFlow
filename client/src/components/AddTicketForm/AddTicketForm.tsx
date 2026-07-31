@@ -2,38 +2,31 @@ import { useState } from 'react';
 import type { Ticket } from '../../types/ticket';
 
 interface AddTicketFormProps {
-  onAddTicket: (title: string, description: string, priority: Ticket['priority']) => void;
+  onAddTicket: (
+    title: string,
+    description: string,
+    priority: Ticket['priority'],
+  ) => void | Promise<void>;
   onClose?: () => void;
   initialTicket?: Ticket;
-  editingTicket?: Ticket | null; // Optional prop for editing an existing ticket
   submitButtonText?: string;
-  onSaveEdit?: (ticket: Ticket) => void; // Optional prop to indicate if the form is for editing an existing ticket
 }
 
 function AddTicketForm({
   onAddTicket,
   onClose,
-  editingTicket,
-  onSaveEdit,
+  initialTicket,
+
   submitButtonText,
 }: AddTicketFormProps) {
-  const [title, setTitle] = useState(editingTicket?.title ?? '');
-  const [description, setDescription] = useState(editingTicket?.description ?? '');
-  const [priority, setPriority] = useState<Ticket['priority']>(editingTicket?.priority ?? 'Low');
-  function handleSubmit(event: React.FormEvent) {
+  const [title, setTitle] = useState(initialTicket?.title ?? '');
+  const [description, setDescription] = useState(initialTicket?.description ?? '');
+  const [priority, setPriority] = useState<Ticket['priority']>(initialTicket?.priority ?? 'Low');
+  async function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
     if (title.trim() === '') return;
-    if (editingTicket && onSaveEdit) {
-      onSaveEdit({
-        ...editingTicket,
-        title,
-        description,
-        priority,
-      });
-      return;
-    }
 
-    onAddTicket(title, description, priority);
+    await onAddTicket(title, description, priority);
     // Default priority set to 'Low'
     setTitle('');
     setDescription('');
@@ -69,7 +62,9 @@ function AddTicketForm({
           <option value="Critical">Critical</option>
         </select>
       </div>
-      <button type="submit">{editingTicket ? 'Save Changes ' : 'Add Ticket'}</button>
+      <button type="submit">
+        {submitButtonText ?? (initialTicket ? 'Save Changes ' : 'Add Ticket')}
+      </button>
     </form>
   );
 }

@@ -1,7 +1,4 @@
-import { error } from "node:console";
 import { db } from "../database/database.js";
-import { resolve } from "node:dns";
-import { rejects } from "node:assert/strict";
 
 interface Ticket {
   id: number;
@@ -87,7 +84,7 @@ export function updateTicket(
   description: string,
   priority: Ticket["priority"],
   status: Ticket["status"],
-): Promise<boolean> {
+): Promise<Ticket | undefined> {
   return new Promise((resolve, reject) => {
     db.run(
       `
@@ -101,7 +98,11 @@ export function updateTicket(
           reject(error);
           return;
         }
-        resolve(this.changes > 0);
+        if (this.changes === 0) {
+          resolve(undefined);
+          return;
+        }
+        resolve({ id, title, description, priority, status });
       },
     );
   });

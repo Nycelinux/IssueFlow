@@ -51,18 +51,20 @@ export async function deleteTicket(req: Request, res: Response) {
 
 export async function updateTicket(req: Request, res: Response) {
   try {
-    const success = await ticketService.updateTicket(
-      Number(req.params.id),
+    const id = Number(req.params.id);
+    const updatedTicket = await ticketService.updateTicket(
+      id,
       req.body.title,
       req.body.description,
       req.body.priority,
       req.body.status,
     );
-    if (!success) {
-      return res.sendStatus(404);
+    if (!updatedTicket) {
+      return res.status(404).json({ message: "Ticket not found" });
     }
-    res.sendStatus(204).json(updateTicket);
-  } catch {
-    res.sendStatus(500);
+    res.json(updatedTicket);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "update failed" });
   }
 }

@@ -14,6 +14,7 @@ function TicketStatusChart({ open, progress, closed }: TicketStatusChartProps) {
     { name: 'In Progress', value: progress },
     { name: 'Closed', value: closed },
   ];
+  console.log('chart data: ' + data);
   return (
     <ResponsiveContainer width="100%" height={300}>
       <PieChart>

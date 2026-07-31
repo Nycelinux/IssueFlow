@@ -14,16 +14,12 @@ import Toast from '../components/Toast/Toast';
 import DashboardHeader from '../components/DashboardHeader/DashboardHeader';
 import ConfirmDialog from '../components/ConfirmDialog/ConfirmDialogPrompts';
 import TicketStatusChart from '../components/Charts/TicketStatusChart';
-import {
-  createticket,
-  getTickets,
-  deleteTicket as deleteTicketApi,
-  updateTicket as updateTicketApi,
-} from '../api/tickets';
+import { useTicket } from '../hooks/useTickets';
+
 import type { Ticket } from '../types/ticket';
 
 function Dashboard() {
-  const [tickets, setTickets] = useState<Ticket[]>([]);
+  const { tickets, addTicket, deleteTicket, updateTicket, toggleTicketStatus } = useTicket();
 
   const [deleteTicketId, setDeleteTicketId] = useState<number | null>(null);
   const [search, setSearch] = useState('');
@@ -53,48 +49,13 @@ function Dashboard() {
     };
   }, []);
 
-  useEffect(() => {
-    async function fetchTickets() {
-      try {
-        const data = await getTickets();
-        setTickets(data);
-      } catch (error) {
-        console.error(error);
-        showToast('Could not load Ticketss');
-      }
-    }
-    fetchTickets();
-  }, []);
+  console.log(tickets);
 
   const statistics = getTicketStatistics(tickets);
   const searchedTickets = searchTickets(tickets, search);
   const filteredTickets = filterTickets(searchedTickets, priorityFilter, statusFilter);
   const visibleTickets = sortTickets(filteredTickets, sortBy);
 
-  async function addTicket(title: string, description: string, priority: Ticket['priority']) {
-    try {
-      const newTicket = await createticket({
-        title,
-        description,
-        priority,
-      });
-      setTickets((previousTickets) => [newTicket, ...previousTickets]);
-      showToast(' Ticket created');
-    } catch (error) {
-      console.error(error);
-      showToast('Creating ticket failed');
-    }
-  }
-  async function deleteTicket(id: number) {
-    try {
-      await deleteTicketApi(id);
-      setTickets((previousTickets) => previousTickets.filter((ticket) => ticket.id !== id));
-      showToast('ticket deleted');
-    } catch (error) {
-      console.error(error);
-      showToast('delete failed');
-    }
-  }
   function handleEdit(id: number) {
     const ticketToEdit = tickets.find((ticket) => ticket.id === id);
     if (ticketToEdit) {
@@ -102,43 +63,17 @@ function Dashboard() {
     }
   }
 
-  async function updateTicket(
-    id: number,
+  async function handleSaveTicket(
     title: string,
     description: string,
     priority: Ticket['priority'],
   ) {
-    const updatedTicket: Ticket = {
-      id,
-      title,
-      description,
-      priority,
-      status: editingTicket!.status,
-    };
-    await updateTicketApi(updatedTicket);
-
-    setTickets((previousTicket) =>
-      previousTicket.map((ticket) =>
-        ticket.id === id
-          ? {
-              ...ticket,
-              title,
-              description,
-              priority,
-            }
-          : ticket,
-      ),
-    );
-    setEditingTicket(null);
-    showToast('ticket updated');
-  }
-
-  function handleSaveTicket(title: string, description: string, priority: Ticket['priority']) {
-    if (!editingTicket) {
-      addTicket(title, description, priority);
+    if (editingTicket) {
+      await updateTicket({ ...editingTicket, title, description, priority });
+      setEditingTicket(null);
       return;
     }
-    updateTicket(editingTicket.id, title, description, priority);
+    await addTicket(title, description, priority);
     setShowAddTicketForm(false);
   }
 
@@ -147,24 +82,6 @@ function Dashboard() {
     setTimeout(() => {
       setToastMessage('');
     }, 3000);
-  }
-
-  function toggleTicketStatus(id: number) {
-    setTickets((previousTickets) =>
-      previousTickets.map((ticket) =>
-        ticket.id === id
-          ? {
-              ...ticket,
-              status:
-                ticket.status === 'Open'
-                  ? 'In Progress'
-                  : ticket.status === 'In Progress'
-                    ? 'Closed'
-                    : 'Open',
-            }
-          : ticket,
-      ),
-    );
   }
 
   return (

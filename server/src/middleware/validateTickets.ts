@@ -18,7 +18,7 @@ export function validateTicket(
     });
   }
 
-  const priorities = ["Low", "Medium", "High"];
+  const priorities = ["Low", "Medium", "High", "Critical"];
   if (!priorities.includes(priority)) {
     return res.status(400).json({
       message: "Invalid priority",
