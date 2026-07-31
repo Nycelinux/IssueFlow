@@ -50,3 +50,12 @@ export async function updateTicket(ticket: Ticket) {
   }
   return response.json();
 }
+
+
+export async function getTicketById(id:number) {
+  const response = await fetch(`${API_URL}/${id}`);
+  if(!response.ok){
+    throw new Error('Ticket not found');
+  }
+  return response.json();
+}
