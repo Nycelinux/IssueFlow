@@ -1,10 +1,8 @@
 import Navbar from '../components/Navbar/Navbar';
 import Sidebar from '../components/Sidebar/Sidebar';
-import StatisticsCard from '../components/StatisticsCard/StatisticsCard';
 import TicketCard from '../components/TicketCard/TicketCard';
 import { useState, useEffect } from 'react';
 import AddTicketForm from '../components/AddTicketForm/AddTicketForm';
-import { getTicketStatistics } from '../components/utils/statistics';
 import { searchTickets } from '../components/utils/search';
 import Modal from '../components/Modal/Modal';
 import { filterTickets } from '../components/utils/filter';
@@ -13,7 +11,6 @@ import Toolbar from '../components/Toolbar/Toolbar';
 import Toast from '../components/Toast/Toast';
 import DashboardHeader from '../components/DashboardHeader/DashboardHeader';
 import ConfirmDialog from '../components/ConfirmDialog/ConfirmDialogPrompts';
-import TicketStatusChart from '../components/Charts/TicketStatusChart';
 import { useTicket } from '../hooks/useTickets';
 
 import type { Ticket } from '../types/ticket';
@@ -51,7 +48,6 @@ function Dashboard() {
 
   console.log(tickets);
 
-  const statistics = getTicketStatistics(tickets);
   const searchedTickets = searchTickets(tickets, search);
   const filteredTickets = filterTickets(searchedTickets, priorityFilter, statusFilter);
   const visibleTickets = sortTickets(filteredTickets, sortBy);
@@ -86,7 +82,6 @@ function Dashboard() {
 
   return (
     <div className="dashboard">
-      <Sidebar />
       <main>
         <Navbar onNewTicket={() => setShowAddTicketForm(true)} />
         <DashboardHeader ticketCount={visibleTickets.length} />
@@ -101,19 +96,6 @@ function Dashboard() {
           onSortChange={setSortBy}
           ticketCount={visibleTickets.length}
         />
-        <section className="statistics-grid">
-          <StatisticsCard title="Open Tickets" value={statistics.openTickets} />
-          <StatisticsCard title="In Progress" value={statistics.progressTickets} />
-          <StatisticsCard title="Closed Tickets" value={statistics.closedTickets} />
-          <StatisticsCard title="Critical Tickets" value={statistics.criticalTickets} />
-        </section>
-        <section className="chart-container">
-          <TicketStatusChart
-            open={statistics.openTickets}
-            progress={statistics.progressTickets}
-            closed={statistics.closedTickets}
-          />
-        </section>
         <section>
           <Modal
             isOpen={showAddTicketForm}

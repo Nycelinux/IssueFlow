@@ -43,7 +43,11 @@ function TicketDetails() {
     const confirmed = window.confirm('are you sure you want to delete this ticket?');
     if (!confirmed) return;
     await deleteTicket(ticket.id);
-    navigate('/');
+    navigate('/dashboard');
+  }
+
+  function handleEdit() {
+    navigate(`/tickets/${id}/edit`);
   }
 
   async function handleStatusChange() {
@@ -55,7 +59,7 @@ function TicketDetails() {
 
   return (
     <div className="ticket-details">
-      <Link className="back-link" to="/">
+      <Link className="back-link" to="/dashboard">
         ... Back to dashboard
       </Link>
       <div className="ticket-details-card">
@@ -72,6 +76,7 @@ function TicketDetails() {
         </div>
         <div className="ticket-actions">
           <button onClick={handleStatusChange}> Change Status</button>
+          <button onClick={handleEdit}> edit ticket</button>
           <button onClick={handleDelete}> Delete ticket</button>
         </div>
       </div>
