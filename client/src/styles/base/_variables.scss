@@ -1,12 +1,27 @@
-$background: #111827;
-$surface: #1f2937;
-$surface-hover: #2d3748;
-$primary: #2563eb;
-$success: #10b981;
-$warning: #f59e0b;
-$error: #ef4444;
+[data-theme='dark'] {
+  --background: #111827;
+  --surface: #1f2937;
+  --surface-hover: #2d3748;
+  --primary: #2563eb;
+  --success: #10b981;
+  --warning: #f59e0b;
+  --error: #ef4444;
 
-$text: #f9fafb;
-$text-muted: #9ca3af;
-$radius: 16px;
-$transition: 0.25s ease;
+  --text: #f9fafb;
+  --text-muted: #9ca3af;
+  --radius: 16px;
+  --transition: 0.25s ease;
+}
+
+[data-theme='light'] {
+  --background: #f9fafb;
+  --surface: #ffffff;
+  --surface-hover: #f3f4f6;
+  --primary: #2563eb;
+  --success: #10b981;
+  --warning: #f59e0b;
+  --error: #ef4444;
+
+  --text: #111827;
+  --text-muted: #6b7280;
+}

@@ -1,42 +1,33 @@
-import Navbar from '../components/Navbar/Navbar';
-import Sidebar from '../components/Sidebar/Sidebar';
-import TicketCard from '../components/TicketCard/TicketCard';
 import { useState, useEffect } from 'react';
 import AddTicketForm from '../components/AddTicketForm/AddTicketForm';
-import { searchTickets } from '../components/utils/search';
 import Modal from '../components/Modal/Modal';
-import { filterTickets } from '../components/utils/filter';
-import { sortTickets } from '../components/utils/sort';
-import Toolbar from '../components/Toolbar/Toolbar';
+
 import Toast from '../components/Toast/Toast';
 import DashboardHeader from '../components/DashboardHeader/DashboardHeader';
-import ConfirmDialog from '../components/ConfirmDialog/ConfirmDialogPrompts';
 import { useTicket } from '../hooks/useTickets';
-
+import StatisticsCard from '../components/StatisticsCard/StatisticsCard';
 import type { Ticket } from '../types/ticket';
+import TicketCard from '../components/TicketCard/TicketCard';
+import { getTicketStatistics } from '../components/utils/statistics';
+import { useTicketModal } from '../components/Modal/TicketModalContext';
 
 function Dashboard() {
-  const { tickets, addTicket, deleteTicket, updateTicket, toggleTicketStatus } = useTicket();
+  const { tickets, addTicket, updateTicket, toggleTicketStatus } = useTicket();
 
-  const [deleteTicketId, setDeleteTicketId] = useState<number | null>(null);
-  const [search, setSearch] = useState('');
   const [toastMessage, setToastMessage] = useState('');
-  const [showAddTicketForm, setShowAddTicketForm] = useState(false);
-  const [sortBy, setSortBy] = useState<'Newest' | 'Oldest' | 'Priority'>('Newest');
+  const { open, openModal, closeModal } = useTicketModal();
+
   const [editingTicket, setEditingTicket] = useState<Ticket | null>(null);
-  const [priorityFilter, setPriorityFilter] = useState<'All' | Ticket['priority']>('All');
-  const [statusFilter, setStatusFilter] = useState<'All' | Ticket['status']>('All');
 
   useEffect(() => {
     function handleKeyDown(event: KeyboardEvent) {
       if (event.ctrlKey && event.key === 'n') {
         event.preventDefault();
-        setShowAddTicketForm(true);
+        openModal();
       }
       if (event.key === 'Escape') {
-        setShowAddTicketForm(false);
+        closeModal();
         setEditingTicket(null);
-        setDeleteTicketId(null);
       }
     }
 
@@ -47,10 +38,6 @@ function Dashboard() {
   }, []);
 
   console.log(tickets);
-
-  const searchedTickets = searchTickets(tickets, search);
-  const filteredTickets = filterTickets(searchedTickets, priorityFilter, statusFilter);
-  const visibleTickets = sortTickets(filteredTickets, sortBy);
 
   function handleEdit(id: number) {
     const ticketToEdit = tickets.find((ticket) => ticket.id === id);
@@ -67,12 +54,21 @@ function Dashboard() {
     if (editingTicket) {
       await updateTicket({ ...editingTicket, title, description, priority });
       setEditingTicket(null);
+      closeModal();
+      setToastMessage('Ticket updated successfully!');
       return;
+    } else {
+      await addTicket(title, description, priority);
+      closeModal();
+      setToastMessage('Ticket created successfully!');
     }
-    await addTicket(title, description, priority);
-    setShowAddTicketForm(false);
+    setTimeout(() => {
+      setToastMessage('');
+    }, 3000);
   }
 
+  const recentTickets = [...tickets].sort((a, b) => b.id - a.id).slice(0, 5);
+  const statistics = getTicketStatistics(tickets);
   function showToast(message: string) {
     setToastMessage(message);
     setTimeout(() => {
@@ -82,77 +78,51 @@ function Dashboard() {
 
   return (
     <div className="dashboard">
-      <main>
-        <Navbar onNewTicket={() => setShowAddTicketForm(true)} />
-        <DashboardHeader ticketCount={visibleTickets.length} />
-        <Toolbar
-          search={search}
-          onSearchChange={(e) => setSearch(e.target.value)}
-          priority={priorityFilter}
-          status={statusFilter}
-          sortBy={sortBy}
-          onPriorityChange={setPriorityFilter}
-          onStatusChange={setStatusFilter}
-          onSortChange={setSortBy}
-          ticketCount={visibleTickets.length}
-        />
-        <section>
-          <Modal
-            isOpen={showAddTicketForm}
-            title="Add New Ticket"
-            onClose={() => setShowAddTicketForm(false)}
-          >
-            <AddTicketForm
-              submitButtonText="Ceate Ticket"
-              onAddTicket={handleSaveTicket}
-              onClose={() => setShowAddTicketForm(false)}
+      <DashboardHeader ticketCount={tickets.length} />
+      <section className="statistics-grid">
+        <StatisticsCard title="Open Tickets" value={statistics.openTickets} />
+        <StatisticsCard title="In Progress" value={statistics.progressTickets} />
+        <StatisticsCard title="Closed Tickets" value={statistics.closedTickets} />
+        <StatisticsCard title="Critical" value={statistics.criticalTickets} />
+      </section>
+      <section className="dashboard-content">
+        <h2>Recent Tickets</h2>
+        {recentTickets.length === 0 ? (
+          <p>No tickets available. Create a new ticket to get started.</p>
+        ) : (
+          recentTickets.map((ticket) => (
+            <TicketCard
+              key={ticket.id}
+              ticket={ticket}
+              onEdit={handleEdit}
+              onToggleStatus={toggleTicketStatus}
+              onDelete={() => {}}
             />
-          </Modal>
-          <Modal
-            isOpen={editingTicket !== null}
-            title="Edit Ticket"
+          ))
+        )}
+      </section>
+      <Modal isOpen={open} title="Add New Ticket" onClose={closeModal}>
+        <AddTicketForm
+          submitButtonText="Ceate Ticket"
+          onAddTicket={handleSaveTicket}
+          onClose={closeModal}
+        />
+      </Modal>
+      <Modal
+        isOpen={editingTicket !== null}
+        title="Edit Ticket"
+        onClose={() => setEditingTicket(null)}
+      >
+        {editingTicket && (
+          <AddTicketForm
+            initialTicket={editingTicket}
+            submitButtonText="save changes"
+            onAddTicket={handleSaveTicket}
             onClose={() => setEditingTicket(null)}
-          >
-            {editingTicket && (
-              <AddTicketForm
-                initialTicket={editingTicket}
-                submitButtonText="save changes"
-                onAddTicket={handleSaveTicket}
-                onClose={() => setEditingTicket(null)}
-              />
-            )}
-          </Modal>
-          <ConfirmDialog
-            isOpen={deleteTicketId !== null}
-            title="Delete Ticket"
-            message="Are you sure youwant to Delete ths Ticket?"
-            onCancel={() => setDeleteTicketId(null)}
-            onConfirm={() => {
-              if (deleteTicketId !== null) {
-                deleteTicket(deleteTicketId);
-                setDeleteTicketId(null);
-              }
-            }}
           />
-          {visibleTickets.length === 0 ? (
-            <div className="empty-state">
-              <h2>No tickets found.</h2>
-              <p>Try adjusting your search or adding a new ticket.</p>
-            </div>
-          ) : (
-            visibleTickets.map((ticket) => (
-              <TicketCard
-                key={ticket.id}
-                ticket={ticket}
-                onDelete={(id) => setDeleteTicketId(id)}
-                onEdit={handleEdit}
-                onToggleStatus={toggleTicketStatus}
-              />
-            ))
-          )}
-        </section>
-        {toastMessage && <Toast message={toastMessage} />}
-      </main>
+        )}
+      </Modal>
+      {toastMessage && <Toast message={toastMessage} />}
     </div>
   );
 }

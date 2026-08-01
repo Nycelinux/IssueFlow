@@ -43,7 +43,7 @@ function TicketDetails() {
     const confirmed = window.confirm('are you sure you want to delete this ticket?');
     if (!confirmed) return;
     await deleteTicket(ticket.id);
-    navigate('/dashboard');
+    navigate('/');
   }
 
   function handleEdit() {
@@ -59,7 +59,7 @@ function TicketDetails() {
 
   return (
     <div className="ticket-details">
-      <Link className="back-link" to="/dashboard">
+      <Link className="back-link" to="/">
         ... Back to dashboard
       </Link>
       <div className="ticket-details-card">

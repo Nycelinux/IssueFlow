@@ -11,19 +11,19 @@
     gap: 20px;
 
     a {
-      color: variables.$text;
+      color: var(--text);
       text-decoration: none;
-      transition: variables.$transition;
+      transition: var(--transition);
 
       &:hover {
-        color: variables.$primary;
+        color: var(--primary);
       }
     }
   }
 }
 
 .navbar button {
-  background: variables.$primary;
+  background: var(--primary);
   color: white;
   border: none;
   border-radius: 12px;
@@ -31,6 +31,6 @@
   cursor: pointer;
 
   &:hover {
-    background: variables.$surface-hover;
+    background: var(--surface)-hover;
   }
 }

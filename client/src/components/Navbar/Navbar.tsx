@@ -1,14 +1,12 @@
+import { useTicketModal } from '../Modal/TicketModalContext';
 import './Navbar.scss';
 
-interface NavbarProps {
-  onNewTicket?: () => void;
-}
-
-function Navbar({ onNewTicket }: NavbarProps) {
+function Navbar() {
+  const { openModal } = useTicketModal();
   return (
     <header className="navbar">
       <h1>Dashboard</h1>
-      <button onClick={onNewTicket}> + New Ticket</button>
+      <button onClick={openModal}> + New Ticket</button>
     </header>
   );
 }

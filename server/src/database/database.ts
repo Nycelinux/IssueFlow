@@ -31,11 +31,6 @@ db.serialize(() => {
   );
 });
 
-db.run(`
-ALTER TABLE tickets
-ADD COLUMN createdAt TEXT
-`);
-
 db.all("SELECT name FROM sqlite_master WHERE type='table'", (error, rows) => {
   if (error) {
     console.error(error.message);

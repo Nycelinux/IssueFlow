@@ -7,8 +7,8 @@
 
 body {
   font-family: Inter, Arial, sans-serif;
-  background: variables.$background;
-  color: variables.$text;
+  background: var(--background);
+  color: var(--text);
 }
 
 button,

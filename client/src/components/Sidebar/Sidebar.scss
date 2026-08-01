@@ -1,3 +1,5 @@
+@use '../../styles/base/variables';
+
 .sidebar nav {
   display: flex;
   flex-direction: column;
@@ -5,18 +7,18 @@
 }
 
 a {
-  color: variables.$text;
+  color: var(--text);
   text-decoration: none;
   padding: 10px 15px;
   border-radius: 8px;
-  transition: variables.$transition;
+  transition: var(--transition);
 
   &:hover {
-    background: variables.$primary;
+    background: var(--primary);
   }
 
   &.active {
-    background: variables.$primary;
+    background: var(--primary);
     color: wheat;
   }
 }

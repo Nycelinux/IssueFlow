@@ -4,7 +4,7 @@ import { useTicket } from '../hooks/useTickets';
 import { getTicketStatistics } from '../components/utils/statistics';
 import TicketStatusChart from '../components/Charts/TicketStatusChart';
 import Navbar from '../components/Navbar/Navbar';
-import TicketPriorityChart from '../components/Charts/TicketStatusChart';
+import TicketPriorityChart from '../components/Charts/TicketPriorityChart';
 
 function Analytics() {
   const { tickets } = useTicket();
