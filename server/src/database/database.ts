@@ -17,7 +17,8 @@ db.serialize(() => {
         title TEXT NOT NULL,
         description TEXT NOT NULL,
         priority TEXT NOT NULL,
-        status TEXT NOT NULL
+        status TEXT NOT NULL,
+        createdAt TEXT NOT NULL
         )
         `,
     (error) => {
@@ -29,6 +30,11 @@ db.serialize(() => {
     },
   );
 });
+
+db.run(`
+ALTER TABLE tickets
+ADD COLUMN createdAt TEXT
+`);
 
 db.all("SELECT name FROM sqlite_master WHERE type='table'", (error, rows) => {
   if (error) {

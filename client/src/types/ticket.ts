@@ -4,4 +4,5 @@ export interface Ticket {
   description: string;
   priority: 'Low' | 'Medium' | 'High' | 'Critical';
   status: 'Open' | 'In Progress' | 'Closed';
+  createdAt: string;
 }

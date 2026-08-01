@@ -4,7 +4,7 @@ import { useTicket } from '../hooks/useTickets';
 import { getTicketStatistics } from '../components/utils/statistics';
 import TicketStatusChart from '../components/Charts/TicketStatusChart';
 import Navbar from '../components/Navbar/Navbar';
-import TicketPriorityChart from '../components/Charts/TicketPriorityChart';
+import TicketPriorityChart from '../components/Charts/TicketStatusChart';
 
 function Analytics() {
   const { tickets } = useTicket();
@@ -22,12 +22,21 @@ function Analytics() {
           <StatisticsCard title="Critical Tickets" value={statistics.criticalTickets} />
         </section>
         <section className="chart-container">
-          <TicketPriorityChart
-            low={statistics.lowPriority}
-            medium={statistics.mediumPriority}
-            high={statistics.highPriority}
-            critical={statistics.criticalTickets}
+          <h2>Ticket Status</h2>
+          <TicketStatusChart
+            open={statistics.openTickets}
+            progress={statistics.progressTickets}
+            closed={statistics.closedTickets}
           />
+          <section className="chart-container">
+            <h2>Ticket Priorities</h2>
+            <TicketPriorityChart
+              low={statistics.lowPriority}
+              medium={statistics.mediumPriority}
+              high={statistics.highPriority}
+              critical={statistics.criticalTickets}
+            />
+          </section>
         </section>
       </main>
     </div>

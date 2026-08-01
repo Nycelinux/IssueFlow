@@ -1,4 +1,4 @@
-import { BarChart, Bar, Tooltip, ResponsiveContainer, CartesianGrid, XAxis, YAxis } from 'recharts';
+import { Tooltip, ResponsiveContainer, Cell, Pie, PieChart } from 'recharts';
 import './TicketStatusChart.scss';
 
 interface TicketStatusChartProps {
@@ -7,52 +7,26 @@ interface TicketStatusChartProps {
   closed: number;
 }
 
-interface TicketPriorityChartProps {
-  low: number;
-  medium: number;
-  high: number;
-  critical: number;
-}
-
-function TicketPriorityChart({ low, medium, high, critical }: TicketPriorityChartProps) {
+const COLORS = ['#3b82f6', '#f59e0b', '#10b981'];
+function TicketStatusChart({ open, progress, closed }: TicketStatusChartProps) {
   const data = [
-    {
-      priority: 'Low',
-      tickets: low,
-    },
-    {
-      priority: 'Medium',
-      tickets: medium,
-    },
-    {
-      priority: 'High',
-      tickets: high,
-    },
-    {
-      priority: 'Critical',
-      tickets: critical,
-    },
+    { name: 'Open', value: open },
+    { name: 'In Progress', value: progress },
+    { name: 'Closed', value: closed },
   ];
-
-  const COLORS = ['#3b82f6', '#f59e0b', '#10b981'];
-  function TicketStatusChart({ open, progress, closed }: TicketStatusChartProps) {
-    const data = [
-      { name: 'Open', value: open },
-      { name: 'In Progress', value: progress },
-      { name: 'Closed', value: closed },
-    ];
-    console.log('chart data: ' + data);
-    return (
-      <ResponsiveContainer width="100%" height={300}>
-        <BarChart data={data}>
-          <CartesianGrid strokeDasharray="4 4" />
-          <XAxis dataKey="priority" />
-          <YAxis allowDecimals={true} />
-          <Tooltip />
-          <Bar dataKey="tickets" radius={[8, 8, 0, 0]} />
-        </BarChart>
-      </ResponsiveContainer>
-    );
-  }
+  console.log('chart data: ' + data);
+  return (
+    <ResponsiveContainer width="100%" height={300}>
+      <PieChart>
+        <Pie data={data} dataKey="value" outerRadius={90}>
+          {data.map((entry, index) => (
+            <Cell key={index} fill={COLORS[index]} />
+          ))}
+        </Pie>
+        <Tooltip />
+      </PieChart>
+    </ResponsiveContainer>
+  );
 }
-export default TicketPriorityChart;
+
+export default TicketStatusChart;
