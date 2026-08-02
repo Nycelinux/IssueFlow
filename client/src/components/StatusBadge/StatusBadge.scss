@@ -1,0 +1,18 @@
+.status-badge {
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-weight: bold;
+  display: inline-block;
+}
+
+.status-badge.open {
+  background: #16a34a;
+}
+
+.status-badge.in-progress {
+  background: #f59e0b;
+}
+
+.status-badge.closed {
+  background: #6b7280;
+}

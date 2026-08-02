@@ -1,0 +1,21 @@
+.priority-badge {
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-weight: bold;
+}
+
+.priority-badge.low {
+  background: #22c55e;
+}
+
+.priority-badge.medium {
+  background: #eab308;
+}
+
+.priority-badge.high {
+  background: #f97316;
+}
+
+.priority-badge.critical {
+  background: #dc2626;
+}

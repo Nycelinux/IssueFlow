@@ -4,6 +4,8 @@ import type { Ticket } from '../types/ticket';
 import { getTicketById } from '../api/tickets';
 import { useTicket } from '../hooks/useTickets';
 import '../styles/TicketDetails.scss';
+import StatusBadge from '../components/StatusBadge/StatusBdge';
+import PriorityBadge from '../components/PriorityBadge/PriorityBadge';
 
 function TicketDetails() {
   const { id } = useParams();
@@ -68,10 +70,12 @@ function TicketDetails() {
 
         <div className="ticket-info">
           <div>
-            Priority: <strong>{ticket.priority}</strong>
+            <span>Priority:</span>
+            <PriorityBadge priority={ticket.priority} />
           </div>
           <div>
-            Status: <strong>{ticket.status}</strong>
+            <span>Status:</span>
+            <StatusBadge status={ticket.status} />
           </div>
         </div>
         <div className="ticket-actions">
