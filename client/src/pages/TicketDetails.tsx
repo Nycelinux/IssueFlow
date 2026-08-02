@@ -59,7 +59,7 @@ function TicketDetails() {
 
   return (
     <div className="ticket-details">
-      <Link className="back-link" to="/">
+      <Link className="back-link" to="/dashboard">
         ... Back to dashboard
       </Link>
       <div className="ticket-details-card">

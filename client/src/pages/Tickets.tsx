@@ -1,5 +1,5 @@
-import { Link } from 'react-router-dom';
-import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 import '../styles/Tickets.scss';
 import { useTicket } from '../hooks/useTickets';
 import type { Ticket } from '../types/ticket';
@@ -8,10 +8,16 @@ import { sortTickets } from '../components/utils/sort';
 import Toolbar from '../components/Toolbar/Toolbar';
 import TicketCard from '../components/TicketCard/TicketCard';
 import ConfirmDialog from '../components/ConfirmDialog/ConfirmDialogPrompts';
+import { paginateTickets } from '../components/utils/pagination';
+import { useSettings } from '../hooks/useSettings';
+import Pagination from '../components/Pagination/Pagination';
 
 function Tickets() {
   const { tickets, deleteTicket, toggleTicketStatus } = useTicket();
   const [search, setSearch] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const { settings } = useSettings();
+  const navigate = useNavigate();
   const [sortBy, setSortBy] = useState<'Newest' | 'Oldest' | 'Priority'>('Newest');
   const [statusFilter, setStatusFilter] = useState<'All' | Ticket['status']>('All');
   const [priorityFilter, setPriorityFilter] = useState<'All' | Ticket['priority']>('All');
@@ -26,7 +32,26 @@ function Tickets() {
     }
     return true;
   });
-  const visibleTickets = sortTickets(filteredTickets, sortBy);
+
+  const sortedTickets = sortTickets(filteredTickets, sortBy);
+  const visibleTickets = paginateTickets(sortedTickets, currentPage, settings.ticketsPerPage);
+  const totalPages = Math.ceil(sortedTickets.length / settings.ticketsPerPage);
+  function handleEdit(id: number) {
+    const ticketToEdit = tickets.find((ticket) => ticket.id === id);
+    if (ticketToEdit) {
+      navigate(`/tickets/${id}/edit`);
+    }
+  }
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [search, sortBy, priorityFilter, statusFilter, settings.ticketsPerPage]);
+
+  useEffect(() => {
+    if (currentPage > totalPages && totalPages > 0) {
+      setCurrentPage(totalPages);
+    }
+  }, [currentPage, totalPages]);
 
   return (
     <div className="tickets-page">
@@ -53,11 +78,13 @@ function Tickets() {
           <TicketCard
             key={ticket.id}
             ticket={ticket}
+            onEdit={handleEdit}
             onDelete={(id) => setDeleteTicketId(id)}
             onToggleStatus={toggleTicketStatus}
           />
         ))
       )}
+      <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
 
       <ConfirmDialog
         isOpen={deleteTicketId !== null}

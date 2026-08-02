@@ -2,11 +2,7 @@ import { useState } from 'react';
 import type { Ticket } from '../../types/ticket';
 
 interface AddTicketFormProps {
-  onAddTicket: (
-    title: string,
-    description: string,
-    priority: Ticket['priority'],
-  ) => void | Promise<void>;
+  onAddTicket: (title: string, description: string, priority: Ticket['priority']) => void;
   onClose?: () => void;
   initialTicket?: Ticket;
   submitButtonText?: string;

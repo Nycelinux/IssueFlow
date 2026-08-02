@@ -11,6 +11,7 @@ import {
 const router = Router();
 
 router.get("/", getTickets);
+router.get("/dashboard", getTickets);
 router.post("/", validateTicket, createTicket);
 router.get("/:id", getSingleTicket);
 router.put("/:id", validateTicket, updateTicket);

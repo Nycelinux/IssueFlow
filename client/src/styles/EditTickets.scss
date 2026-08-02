@@ -1,0 +1,54 @@
+.edit-ticket-page {
+  max-width: 800px;
+  margin: 40px auto;
+}
+
+.edit-ticket-card {
+  background: var(--surface);
+  border-radius: 16px;
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.edit-ticket-card h2 {
+  margin-bottom: 10px;
+}
+
+.edit-ticket-card form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.edit-ticket-card input,
+.edit-ticket-card select,
+.edit-ticket-card textarea {
+  font-size: 16px;
+  width: 100%;
+  padding: 10px;
+  border: none;
+  border-radius: 8px;
+  background: var(--background);
+  color: var(--text);
+}
+
+.edit-ticket-card textarea {
+  resize: vertical;
+  min-height: 180px;
+}
+
+.edit-ticket-card button {
+  align-self: flex-end;
+  background: var(--primary);
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.edit-ticket-card button:hover {
+  opacity: 0.9;
+}

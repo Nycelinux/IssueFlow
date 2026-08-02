@@ -11,7 +11,7 @@ app.use(express.json());
 app.use(logger);
 app.use("/tickets", ticketRoutes);
 app.use(errorHandler);
-app.get("/", (req, res) => {
+app.get("/dashboard", (req, res) => {
   res.send("Hello from express");
 });
 

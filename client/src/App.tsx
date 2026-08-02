@@ -16,6 +16,7 @@ function App() {
     <TicketModalProvider>
       <Routes>
         <Route element={<MainLayout />}>
+          <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/" element={<Dashboard />} />
           <Route path="/tickets" element={<Tickets />} />
           <Route path="/settings" element={<Settings />} />
