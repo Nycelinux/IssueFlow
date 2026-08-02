@@ -14,6 +14,7 @@ import ConfirmDialog from '../components/ConfirmDialog/ConfirmDialogPrompts';
 import QuickActions from '../components/QuickActions/QuickActions';
 import ActivityFeed from '../components/ActivityFeed/ActivityFeed';
 import '../styles/layout/_dashboard.scss';
+import EmptyState from '../components/EmptyState/EmptyState';
 
 function Dashboard() {
   const { tickets, addTicket, updateTicket, toggleTicketStatus, deleteTicket } = useTicket();
@@ -129,7 +130,12 @@ function Dashboard() {
         <div className="dashboard-content">
           <h2>Recent Tickets</h2>
           {recentTickets.length === 0 ? (
-            <p>No tickets available. Create a new ticket to get started.</p>
+            <EmptyState
+              title="No tickets available"
+              text=" Create your first Ticket to get started..."
+              buttonText="Create Ticket"
+              onButtonClick={openModal}
+            />
           ) : (
             recentTickets.map((ticket) => (
               <TicketCard

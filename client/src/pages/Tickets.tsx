@@ -11,6 +11,7 @@ import ConfirmDialog from '../components/ConfirmDialog/ConfirmDialogPrompts';
 import { paginateTickets } from '../components/utils/pagination';
 import { useSettings } from '../hooks/useSettings';
 import Pagination from '../components/Pagination/Pagination';
+import EmptyState from '../components/EmptyState/EmptyState';
 
 function Tickets() {
   const { tickets, deleteTicket, toggleTicketStatus } = useTicket();
@@ -69,10 +70,10 @@ function Tickets() {
         ticketCount={visibleTickets.length}
       />
       {visibleTickets.length === 0 ? (
-        <div className="no-tickets-message">
-          <h2>No tickets found.</h2>
-          <p> Try changing your filters</p>
-        </div>
+        <EmptyState
+          title="No tickets found"
+          text="Try changing your filters  or create a new ticket"
+        />
       ) : (
         visibleTickets.map((ticket) => (
           <TicketCard
