@@ -41,10 +41,10 @@ export function createTicket(
 ): Promise<Ticket> {
   return new Promise((resolve, reject) => {
     const createdAt = new Date().toISOString();
-    const updatedAt = new Date().toISOString();
+    const updatedAt = createdAt;
     db.run(
       `INSERT INTO tickets
-      (title, description,priority,status,createdAt)
+      (title, description,priority,status,createdAt,updatedAt)
       VALUES(?,?,?,?,?,?)`,
       [title, description, priority, "Open", createdAt, updatedAt],
       function (error) {
@@ -92,13 +92,14 @@ export function updateTicket(
   status: Ticket["status"],
 ): Promise<Ticket | undefined> {
   return new Promise((resolve, reject) => {
+    const updatedAt = new Date().toISOString();
     db.run(
       `
         UPDATE tickets
-        SET title=?, description =?, priority=?, status=?
+        SET title=?, description =?, priority=?, status=?, updatedAt=?
         WHERE id=?
       `,
-      [title, description, priority, status, id],
+      [title, description, priority, status, updatedAt, id],
       function (error) {
         if (error) {
           reject(error);

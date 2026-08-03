@@ -38,12 +38,25 @@
 .ticket-actions {
   display: flex;
   gap: 15px;
+  flex-wrap: wrap;
 }
 
 .ticket-actions button {
   padding: 10px 18px;
   border-radius: 8px;
   cursor: pointer;
+}
+
+.ticket-actions button:first-child {
+  background: #2563eb;
+}
+
+.ticket-actions button:nth-child(2) {
+  background: #eab308;
+}
+
+.ticket-actions button:last-child {
+  background: #dc2626;
 }
 
 .ticket-meta {

@@ -86,11 +86,15 @@ function TicketDetails() {
 
           <div>
             <span>Created</span>
-            <strong>{new Date(ticket.createdAt).toLocaleDateString()}</strong>
+            <strong>
+              {ticket.createdAt ? new Date(ticket.createdAt).toLocaleDateString() : 'Unknown'}
+            </strong>
           </div>
           <div>
             <span>Updated</span>
-            <strong>{new Date(ticket.updatedAt).toLocaleDateString()}</strong>
+            <strong>
+              {ticket.updatedAt ? new Date(ticket.updatedAt).toLocaleDateString() : 'Unknown'}
+            </strong>
           </div>
         </div>
         <div className="ticket-actions">

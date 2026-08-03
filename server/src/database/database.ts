@@ -18,7 +18,8 @@ db.serialize(() => {
         description TEXT NOT NULL,
         priority TEXT NOT NULL,
         status TEXT NOT NULL,
-        createdAt TEXT NOT NULL
+        createdAt TEXT NOT NULL,
+        updatedAt TEXT NOT NULL
         )
         `,
     (error) => {

@@ -7,6 +7,8 @@ import {
   XAxis,
   YAxis,
   Cell,
+  Label,
+  LabelList,
 } from 'recharts';
 import './TicketStatusChart.scss';
 
@@ -47,7 +49,19 @@ function TicketPriorityChart({ low, medium, high, critical }: TicketPriorityChar
         <CartesianGrid strokeDasharray="4 4" />
         <XAxis dataKey="priority" />
         <YAxis allowDecimals={false} />
-        <Tooltip />
+        <Tooltip
+          contentStyle={{
+            backgroundColor: '#1f2937',
+            border: '1px solid #374151',
+            color: '#fff',
+          }}
+          labelStyle={{
+            color: '#fff',
+          }}
+          itemStyle={{
+            color: '#fff',
+          }}
+        />
         <Bar dataKey="tickets" radius={[8, 8, 0, 0]}>
           {data.map((entry, index) => (
             <Cell key={`cell-${index}`} fill={entry.color} />

@@ -14,16 +14,28 @@ function TicketStatusChart({ open, progress, closed }: TicketStatusChartProps) {
     { name: 'In Progress', value: progress },
     { name: 'Closed', value: closed },
   ];
-  console.log('chart data: ' + data);
+  console.log(data);
   return (
     <ResponsiveContainer width="100%" height={300}>
       <PieChart>
-        <Pie data={data} dataKey="value" outerRadius={90}>
+        <Pie data={data} dataKey="value" label outerRadius={90}>
           {data.map((entry, index) => (
             <Cell key={index} fill={COLORS[index]} />
           ))}
         </Pie>
-        <Tooltip />
+        <Tooltip
+          contentStyle={{
+            backgroundColor: '#1f2937',
+            border: '1px solid #374151',
+            color: '#fff',
+          }}
+          labelStyle={{
+            color: '#fff',
+          }}
+          itemStyle={{
+            color: '#fff',
+          }}
+        />
       </PieChart>
     </ResponsiveContainer>
   );
