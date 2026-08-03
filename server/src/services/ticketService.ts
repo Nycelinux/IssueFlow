@@ -7,6 +7,7 @@ interface Ticket {
   priority: "Low" | "Medium" | "High" | "Critical";
   status: "Open" | "In Progress" | "Closed";
   createdAt: string;
+  updatedAt: string;
 }
 
 export function getAllTickets(): Promise<Ticket[]> {
@@ -40,11 +41,12 @@ export function createTicket(
 ): Promise<Ticket> {
   return new Promise((resolve, reject) => {
     const createdAt = new Date().toISOString();
+    const updatedAt = new Date().toISOString();
     db.run(
       `INSERT INTO tickets
       (title, description,priority,status,createdAt)
-      VALUES(?,?,?,?,?)`,
-      [title, description, priority, "Open", createdAt],
+      VALUES(?,?,?,?,?,?)`,
+      [title, description, priority, "Open", createdAt, updatedAt],
       function (error) {
         if (error) {
           reject(error);
@@ -57,6 +59,7 @@ export function createTicket(
           priority,
           status: "Open",
           createdAt,
+          updatedAt,
         });
       },
     );

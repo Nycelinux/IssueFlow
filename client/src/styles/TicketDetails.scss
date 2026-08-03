@@ -45,3 +45,24 @@
   border-radius: 8px;
   cursor: pointer;
 }
+
+.ticket-meta {
+  display: flex;
+  gap: 30px;
+  margin: 30px 0;
+  flex-wrap: wrap;
+}
+
+.ticket-meta div {
+  display: flex;
+  flex-direction: column;
+}
+
+.ticket-meta span {
+  opacity: 0.7;
+  font-size: 13px;
+}
+
+.ticket-meta strong {
+  margin-top: 5px;
+}

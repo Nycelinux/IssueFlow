@@ -78,6 +78,21 @@ function TicketDetails() {
             <StatusBadge status={ticket.status} />
           </div>
         </div>
+        <div className="ticket-meta">
+          <div>
+            <span>ID</span>
+            <strong>#{ticket.id}</strong>
+          </div>
+
+          <div>
+            <span>Created</span>
+            <strong>{new Date(ticket.createdAt).toLocaleDateString()}</strong>
+          </div>
+          <div>
+            <span>Updated</span>
+            <strong>{new Date(ticket.updatedAt).toLocaleDateString()}</strong>
+          </div>
+        </div>
         <div className="ticket-actions">
           <button onClick={handleStatusChange}> Change Status</button>
           <button onClick={handleEdit}> edit ticket</button>
