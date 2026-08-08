@@ -37,7 +37,7 @@ describe('Dashboard', () => {
 
   it('renders statistics cards', () => {
     renderDashboard();
-    expect(screen.getByText(/Open Tickets/i)).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: /Open Tickets/i })).toBeInTheDocument();
     expect(screen.getByText(/In Progress/i)).toBeInTheDocument();
     expect(screen.getByText(/Closed Tickets/i)).toBeInTheDocument();
     expect(screen.getByText(/Critical/i)).toBeInTheDocument();
@@ -85,5 +85,4 @@ describe('Dashboard', () => {
     await user.click(screen.getByRole('button', { name: /create ticket/i }));
     expect(openModal).toHaveBeenCalledTimes(1);
   });
-
 });
