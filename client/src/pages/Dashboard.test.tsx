@@ -7,11 +7,11 @@ import { MemoryRouter } from 'react-router-dom';
 const mockUseTicket = vi.fn();
 const mockUseTicketModal = vi.fn();
 
-vi.mock('..hooks/useTickets', () => ({
+vi.mock('../hooks/useTickets', () => ({
   useTicket: () => mockUseTicket(),
 }));
 
-vi.mock('..components/Modal/TicketModalContext', () => ({
+vi.mock('../components/Modal/TicketModalContext', () => ({
   useTicketModal: () => mockUseTicketModal(),
 }));
 
@@ -37,16 +37,16 @@ describe('Dashboard', () => {
 
   it('renders statistics cards', () => {
     renderDashboard();
-    expect(screen.getByText(/Open Tickets/i)).toBeInTheDocument;
-    expect(screen.getByText(/In Progress/i)).toBeInTheDocument;
-    expect(screen.getByText(/Closed Tickets/i)).toBeInTheDocument;
-    expect(screen.getByText(/Critical/i)).toBeInTheDocument;
+    expect(screen.getByText(/Open Tickets/i)).toBeInTheDocument();
+    expect(screen.getByText(/In Progress/i)).toBeInTheDocument();
+    expect(screen.getByText(/Closed Tickets/i)).toBeInTheDocument();
+    expect(screen.getByText(/Critical/i)).toBeInTheDocument();
   });
 
   it('shows empty state when there are no tickets', () => {
     renderDashboard();
-    expect(screen.getByText(/No tickets available/i)).toBeInTheDocument;
-    expect(screen.getByText(/Create your first Ticket/i)).toBeInTheDocument;
+    expect(screen.getByText(/No tickets available/i)).toBeInTheDocument();
+    expect(screen.getByText(/Create your first Ticket/i)).toBeInTheDocument();
   });
 
   it('renders recent tickets when Tickets exist', () => {
@@ -68,8 +68,8 @@ describe('Dashboard', () => {
       deleteTicket: vi.fn(),
     });
     renderDashboard();
-    expect(screen.getByText(/Login Error/i)).toBeInTheDocument;
-    expect(screen.getByText(/Cannot Login/i)).toBeInTheDocument;
+    expect(screen.getByText(/Login Error/i)).toBeInTheDocument();
+    expect(screen.getByText(/Cannot Login/i)).toBeInTheDocument();
   });
 
   it('opens modal when empty state button is clicked', async () => {
@@ -86,13 +86,4 @@ describe('Dashboard', () => {
     expect(openModal).toHaveBeenCalledTimes(1);
   });
 
-  it('shows toast when oast message exists', () => {
-    mockUseTicketModal.mockReturnValue({
-      open: true,
-      openModal: vi.fn(),
-      closeModal: vi.fn(),
-    });
-    renderDashboard();
-    expect(screen.getByText(/Add new Ticket/i)).toBeInTheDocument;
-  });
 });

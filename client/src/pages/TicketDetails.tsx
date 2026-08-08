@@ -10,7 +10,7 @@ import PriorityBadge from '../components/PriorityBadge/PriorityBadge';
 function TicketDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { deleteTicket, updateTicket, toggleTicketStatus } = useTicket();
+  const { deleteTicket, toggleTicketStatus } = useTicket();
   const [ticket, setTicket] = useState<Ticket | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
