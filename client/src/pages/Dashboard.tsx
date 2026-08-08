@@ -85,12 +85,6 @@ function Dashboard() {
     { id: 2, text: 'Ticket #76 updated', date: 'yesterday' },
     { id: 3, text: 'Ticket #45 closed', date: '2 days ago' },
   ];
-  function showToast(message: string) {
-    setToastMessage(message);
-    setTimeout(() => {
-      setToastMessage('');
-    }, 3000);
-  }
 
   return (
     <div className="dashboard">

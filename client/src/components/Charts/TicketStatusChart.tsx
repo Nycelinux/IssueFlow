@@ -19,7 +19,7 @@ function TicketStatusChart({ open, progress, closed }: TicketStatusChartProps) {
     <ResponsiveContainer width="100%" height={300}>
       <PieChart>
         <Pie data={data} dataKey="value" label outerRadius={90}>
-          {data.map((entry, index) => (
+          {data.map((_, index) => (
             <Cell key={index} fill={COLORS[index]} />
           ))}
         </Pie>

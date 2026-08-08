@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useSettings } from '../hooks/useSettings';
 
 export function useTheme() {

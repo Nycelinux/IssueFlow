@@ -7,8 +7,6 @@ import {
   XAxis,
   YAxis,
   Cell,
-  Label,
-  LabelList,
 } from 'recharts';
 import './TicketStatusChart.scss';
 

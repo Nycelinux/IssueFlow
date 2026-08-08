@@ -1,10 +1,8 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import type { Ticket } from '../../types/ticket';
 import Dashboard from './Dashboard';
 import { MemoryRouter } from 'react-router-dom';
-import { deleteTicket } from '../api/tickets';
 
 const mockUseTicket = vi.fn();
 const mockUseTicketModal = vi.fn();
