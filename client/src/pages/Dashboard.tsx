@@ -152,7 +152,12 @@ function Dashboard() {
         <ActivityFeed activities={activities} />
       </section>
 
-      <Modal isOpen={open} title="Add New Ticket" onClose={closeModal} data-testId="AddNewTicketModal">
+      <Modal
+        isOpen={open}
+        title="Add New Ticket"
+        onClose={closeModal}
+        data-testId="AddNewTicketModal"
+      >
         <AddTicketForm
           data-testid="CreateTicketForm"
           submitButtonText="Create Ticket"

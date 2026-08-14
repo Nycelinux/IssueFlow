@@ -13,10 +13,10 @@ function ConfirmDialog({ isOpen, title, message, onConfirm, onCancel }: ConfirmD
     <Modal isOpen={isOpen} title={title} onClose={onCancel}>
       <p>{message}</p>
       <div className="confirm-dialog-buttons">
-        <button className="cancel-button" onClick={onCancel}>
+        <button className="cancel-button" onClick={onCancel} data-testid="confirmDialog-cancel">
           Cancel
         </button>
-        <button className="delete-button" onClick={onConfirm}>
+        <button className="delete-button" onClick={onConfirm} data-testid="confirmDialog-delete">
           Delete
         </button>
       </div>

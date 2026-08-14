@@ -13,7 +13,7 @@ function Modal({ isOpen, title, onClose, children }: ModalProps) {
       <div className="modal-content" data-testId="new-ticket-modal" onClick={(e) => e.stopPropagation()}>
         <header className="modal-header">
         <h2>{title}</h2>
-        <button className="close-button" onClick={onClose}>
+        <button className="close-button" onClick={onClose} data-testId="modal-close-button">
           Close
         </button>
       </header>
