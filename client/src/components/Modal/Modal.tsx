@@ -10,7 +10,7 @@ function Modal({ isOpen, title, onClose, children }: ModalProps) {
   if (!isOpen) return null;
   return (
     <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+      <div className="modal-content" data-testId="new-ticket-modal" onClick={(e) => e.stopPropagation()}>
         <header className="modal-header">
         <h2>{title}</h2>
         <button className="close-button" onClick={onClose}>

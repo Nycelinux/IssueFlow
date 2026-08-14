@@ -6,14 +6,15 @@ interface AddTicketFormProps {
   onClose?: () => void;
   initialTicket?: Ticket;
   submitButtonText?: string;
+  testId?: string;
 }
 
 function AddTicketForm({
   onAddTicket,
   onClose,
   initialTicket,
-
   submitButtonText,
+  testId,
 }: AddTicketFormProps) {
   const [title, setTitle] = useState(initialTicket?.title ?? '');
   const [description, setDescription] = useState(initialTicket?.description ?? '');
@@ -31,13 +32,14 @@ function AddTicketForm({
   }
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} data-testId={testId}>
       <div>
         <input
           type="text"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           placeholder="Enter ticket title"
+          data-testId="ticketTitle"
         />
       </div>
       <div>
@@ -45,6 +47,7 @@ function AddTicketForm({
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           placeholder="Enter ticket description"
+          data-testId="ticketDescription"
         />
       </div>
       <div>
@@ -52,13 +55,21 @@ function AddTicketForm({
           value={priority}
           onChange={(e) => setPriority(e.target.value as Ticket['priority'])}
         >
-          <option value="Low">Low</option>
-          <option value="Medium">Medium</option>
-          <option value="High">High</option>
-          <option value="Critical">Critical</option>
+          <option value="Low" data-testId="status-low">
+            Low
+          </option>
+          <option value="Medium" data-testId="status-medium">
+            Medium
+          </option>
+          <option value="High" data-testId="status-high">
+            High
+          </option>
+          <option value="Critical" data-testId="status-critical">
+            Critical
+          </option>
         </select>
       </div>
-      <button type="submit">
+      <button type="submit" data-testId={testId}>
         {submitButtonText ?? (initialTicket ? 'Save Changes ' : 'Add Ticket')}
       </button>
     </form>

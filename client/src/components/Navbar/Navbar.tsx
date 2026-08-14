@@ -20,7 +20,12 @@ function Navbar() {
   return (
     <header className="navbar">
       <h1>{title}</h1>
-      {showNewTicketButton && <button onClick={openModal}> + New Ticket</button>}
+      {showNewTicketButton && (
+        <button onClick={openModal} data-testId="newTicket-button">
+          {' '}
+          + New Ticket
+        </button>
+      )}
     </header>
   );
 }

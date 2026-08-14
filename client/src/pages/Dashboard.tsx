@@ -87,10 +87,11 @@ function Dashboard() {
   ];
 
   return (
-    <div className="dashboard">
+    <div className="dashboard" data-testid="dashboard">
       <DashboardHeader ticketCount={tickets.length} openTickets={statistics.openTickets} />
       <section className="statistics-grid">
         <StatisticsCard
+          testId="statistics-open"
           title="Open Tickets"
           value={statistics.openTickets}
           description="Currently wanting to be resolved"
@@ -98,6 +99,7 @@ function Dashboard() {
           color="#10b981"
         />
         <StatisticsCard
+          testId="statistics-inProgress"
           title="In Progress"
           value={statistics.progressTickets}
           description="Currently being worked on"
@@ -105,6 +107,7 @@ function Dashboard() {
           color="#3b82f6"
         />
         <StatisticsCard
+          testId="statistics-closed"
           title="Closed Tickets"
           value={statistics.closedTickets}
           description="Successfully completed"
@@ -112,6 +115,7 @@ function Dashboard() {
           color="#6b7280"
         />
         <StatisticsCard
+          testId="statistics-critical"
           title="Critical"
           value={statistics.criticalTickets}
           description="Need immediate attention"
@@ -121,10 +125,11 @@ function Dashboard() {
       </section>
 
       <section className="dashboard-main">
-        <div className="dashboard-content">
+        <div className="dashboard-content" data-testid="dashboard-content">
           <h2>Recent Tickets</h2>
           {recentTickets.length === 0 ? (
             <EmptyState
+              testId="empty-state"
               title="No tickets available"
               text=" Create your first Ticket to get started..."
               buttonText="Create Ticket"
@@ -133,6 +138,7 @@ function Dashboard() {
           ) : (
             recentTickets.map((ticket) => (
               <TicketCard
+                testId="ticketCard"
                 key={ticket.id}
                 ticket={ticket}
                 onEdit={handleEdit}
@@ -146,20 +152,23 @@ function Dashboard() {
         <ActivityFeed activities={activities} />
       </section>
 
-      <Modal isOpen={open} title="Add New Ticket" onClose={closeModal}>
+      <Modal isOpen={open} title="Add New Ticket" onClose={closeModal} data-testId="AddNewTicketModal">
         <AddTicketForm
-          submitButtonText="Ceate Ticket"
+          data-testid="CreateTicketForm"
+          submitButtonText="Create Ticket"
           onAddTicket={handleSaveTicket}
           onClose={closeModal}
         />
       </Modal>
       <Modal
+        data-testid="editTicketForm"
         isOpen={editingTicket !== null}
         title="Edit Ticket"
         onClose={() => setEditingTicket(null)}
       >
         {editingTicket && (
           <AddTicketForm
+            data-testid="editTicketFormSubmitButton"
             initialTicket={editingTicket}
             submitButtonText="save changes"
             onAddTicket={handleSaveTicket}
@@ -168,6 +177,7 @@ function Dashboard() {
         )}
       </Modal>
       <ConfirmDialog
+        data-testid="confirmDeleteTicketForm"
         isOpen={deleteTicketId !== null}
         title="Confirm Delete"
         message="Are you sure you want to delete this ticket?"

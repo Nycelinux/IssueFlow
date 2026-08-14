@@ -5,14 +5,15 @@ interface EmptyStateProps {
   text: string;
   buttonText?: string;
   onButtonClick?: () => void;
+  testId?: string;
 }
 
-function EmptyState({ title, text, buttonText, onButtonClick }: EmptyStateProps) {
+function EmptyState({ title, text, buttonText, onButtonClick, testId }: EmptyStateProps) {
   return (
-    <div className="empty-state">
+    <div className="empty-state" data-testId={testId}>
       <div className="empty-icon">{'\uD83D\uDCC2'}</div>
-      <h2>{title}</h2>
-      <p>{text}</p>
+      <h2 data-testId="empty-state-title">{title}</h2>
+      <p data-testId="empty-state-text">{text}</p>
       {buttonText && <button onClick={onButtonClick}>{buttonText}</button>}
     </div>
   );

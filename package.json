@@ -3,6 +3,8 @@
     "dev": "concurrently \"npm run dev --prefix server\" \"npm run dev --prefix client\""
   },
   "devDependencies": {
+    "@playwright/test": "^1.62.1",
+    "@types/node": "^26.2.0",
     "concurrently": "^9.2.4"
   }
 }

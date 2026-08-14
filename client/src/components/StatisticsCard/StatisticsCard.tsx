@@ -6,6 +6,7 @@ interface StatisticsCardProps {
   description: string;
   icon: string;
   color: string;
+  testId?: string;
 }
 
 const StatisticsCard: React.FC<StatisticsCardProps> = ({
@@ -14,9 +15,14 @@ const StatisticsCard: React.FC<StatisticsCardProps> = ({
   description,
   icon,
   color,
+  testId,
 }) => {
   return (
-    <div className="statistics-card" style={{ borderLeft: `5px solid ${color}` }}>
+    <div
+      className="statistics-card"
+      style={{ borderLeft: `5px solid ${color}` }}
+      data-testId={testId}
+    >
       <div className="statistics-card-header">
         <span className="statistics-card-icon">{icon}</span>
         <h3>{title}</h3>
