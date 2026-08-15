@@ -42,16 +42,45 @@ test.describe('Dashboard', () => {
     await page.goto('/');
     await page.getByTestId('newTicket-button').click();
     await expect(page.getByTestId('new-ticket-modal')).toBeVisible();
-    await page.getByTestId('ticketTitle').fill('Playwright Test');
+    await page.getByTestId('ticketTitle').fill('Playwright Delete Test');
     await page.getByTestId('ticketDescription').fill('Creaated with Playwright by me');
     await page.getByRole('combobox').selectOption('Critical');
     await page.getByRole('button', { name: 'Create Ticket' }).click();
-    const ticket = page.locator('div', { hasText: 'Playwright Test' }).last();
+    const ticket = page.locator('div', { hasText: 'Playwright Delete Test' }).last();
     await expect(ticket).toBeVisible();
     const deleteBtn = ticket.getByTestId(/^ticket-deleteBtn-/);
     await deleteBtn.click();
     const confirmDelete = await page.getByTestId('confirmDialog-delete');
     await confirmDelete.click();
-    await expect(page.getByText('Playwright Test')).not.toBeVisible();
+    await expect(page.getByText('Playwright Delete Test')).not.toBeVisible();
+  });
+
+  test(' edit new created Ticket', async ({ page }) => {
+    // Expect a title "to contain" a substring.
+    await page.goto('/');
+    await page.getByTestId('newTicket-button').click();
+    await expect(page.getByTestId('new-ticket-modal')).toBeVisible();
+    await page.getByTestId('ticketTitle').fill('Playwright Edit Test');
+    await page.getByTestId('ticketDescription').fill('Creaated with Playwright by me');
+    await page.getByRole('combobox').selectOption('Critical');
+    await page.getByRole('button', { name: 'Create Ticket' }).click();
+    const ticket = page.locator('div', { hasText: 'Playwright Edit Test' }).last();
+    await expect(ticket).toBeVisible();
+    const editBtn = ticket.getByTestId(/^ticket-editBtn-/);
+    await editBtn.click();
+    await expect(page.getByTestId('new-ticket-modal')).toBeVisible();
+    await page.getByTestId('ticketTitle').fill('Playwright edit Test');
+    await page.getByTestId('ticketDescription').fill('Edit Creaated with Playwright by me');
+    await page.getByRole('combobox').selectOption('Medium');
+    await page.getByRole('button', { name: 'save changes' }).click();
+
+    const editedticket = page.locator('div', { hasText: 'Playwright edit Test' }).last();
+    await expect(editedticket).toBeVisible();
+
+    const deleteBtn = editedticket.getByTestId(/^ticket-deleteBtn-/);
+    await deleteBtn.click();
+    const confirmDelete = await page.getByTestId('confirmDialog-delete');
+    await confirmDelete.click();
+    await expect(page.getByText('Playwright Delete Test')).not.toBeVisible();
   });
 });
