@@ -81,6 +81,17 @@ test.describe('Dashboard', () => {
     await deleteBtn.click();
     const confirmDelete = await page.getByTestId('confirmDialog-delete');
     await confirmDelete.click();
-    await expect(page.getByText('Playwright Delete Test')).not.toBeVisible();
+    await expect(page.getByText('Playwright edit Test')).not.toBeVisible();
+  });
+
+  test('changes ticket status', async ({ page }) => {
+    await page.goto('/');
+    const ticket = page.locator('.ticket-card').first();
+    const statusLocator = ticket.getByText(/Status:/);
+    const statusBefore = await statusLocator.textContent();
+    await ticket.getByRole('button', { name: /change status/i }).click();
+    await expect(statusLocator).not.toHaveText(statusBefore!);
+    const statusAfter = await statusLocator.textContent();
+    expect(statusAfter).not.toBe(statusBefore);
   });
 });

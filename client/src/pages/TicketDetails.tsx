@@ -60,7 +60,7 @@ function TicketDetails() {
   }
 
   return (
-    <div className="ticket-details">
+    <div className="ticket-details" data-testid="ticket-details">
       <Link className="back-link" to="/dashboard">
         ... Back to dashboard
       </Link>

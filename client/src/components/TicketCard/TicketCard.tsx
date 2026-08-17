@@ -12,9 +12,11 @@ interface TicketCardProps {
 
 const TicketCard: React.FC<TicketCardProps> = ({ ticket, onDelete, onEdit, onToggleStatus }) => {
   return (
-    <div className="ticket-card" data-testId={`ticket-card-${ticket.id}`}>
-      <h3 data-testId={`ticket-card-link-${ticket.id}`}>
-        <Link to={`/tickets/${ticket.id}`}>{ticket.title}</Link>
+    <div className="ticket-card" data-testid={`ticket-card-${ticket.id}`}>
+      <h3>
+        <Link to={`/tickets/${ticket.id}`} data-testid="ticket-card-link">
+          {ticket.title}
+        </Link>
       </h3>
       <p data-testId={`ticket-description-${ticket.id}`}>{ticket.description}</p>
       <span
@@ -24,11 +26,11 @@ const TicketCard: React.FC<TicketCardProps> = ({ ticket, onDelete, onEdit, onTog
         Priority: {ticket.priority}
       </span>
       <p data-testId={`ticket-status-${ticket.id}`}>Status: {ticket.status}</p>
-      <div className="ticket-actions" data-testId={`ticket-actions-${ticket.id}`}>
-        <button onClick={() => onDelete?.(ticket.id)} data-testId={`ticket-deleteBtn-${ticket.id}`}>
+      <div className="ticket-actions" data-testid={`ticket-actions-${ticket.id}`}>
+        <button onClick={() => onDelete?.(ticket.id)} data-testid={`ticket-deleteBtn-${ticket.id}`}>
           Delete
         </button>
-        <button onClick={() => onEdit?.(ticket.id)} data-testId={`ticket-editBtn-${ticket.id}`}>
+        <button onClick={() => onEdit?.(ticket.id)} data-testid={`ticket-editBtn-${ticket.id}`}>
           Edit
         </button>
         <button
