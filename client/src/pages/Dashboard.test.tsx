@@ -37,10 +37,10 @@ describe('Dashboard', () => {
 
   it('renders statistics cards', () => {
     renderDashboard();
-    expect(screen.getByRole('heading', { name: /Open Tickets/i })).toBeInTheDocument();
-    expect(screen.getByText(/In Progress/i)).toBeInTheDocument();
-    expect(screen.getByText(/Closed Tickets/i)).toBeInTheDocument();
-    expect(screen.getByText(/Critical/i)).toBeInTheDocument();
+    expect(screen.getByTestId('statistics-open')).toBeInTheDocument();
+    expect(screen.getByTestId('statistics-inProgress')).toBeInTheDocument();
+    expect(screen.getByTestId('statistics-closed')).toBeInTheDocument();
+    expect(screen.getByTestId('statistics-critical')).toBeInTheDocument();
   });
 
   it('shows empty state when there are no tickets', () => {
