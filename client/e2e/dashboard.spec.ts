@@ -25,7 +25,8 @@ test.describe('Dashboard', () => {
     await page.getByTestId('ticketDescription').fill('Creaated with Playwright by me');
     await page.getByRole('combobox').selectOption('Critical');
     await page.getByRole('button', { name: 'Create Ticket' }).click();
-    await expect(page.getByText('Playwright Test')).toBeVisible();
+    const ticket = page.locator('.ticket-card').filter({ hasText: 'Playwright Test' }).last();
+    await expect(ticket).toBeVisible();
   });
 
   test('close creates a new Ticket modal', async ({ page }) => {
@@ -34,6 +35,7 @@ test.describe('Dashboard', () => {
     await page.getByTestId('newTicket-button').click();
     await expect(page.getByTestId('new-ticket-modal')).toBeVisible();
     await page.getByTestId('modal-close-button').click();
+
     await expect(page.getByTestId('new-ticket-modal')).not.toBeVisible();
   });
 
