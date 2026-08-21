@@ -1,0 +1,24 @@
+@use '../../styles/base/variables';
+
+.sidebar nav {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+a {
+  color: var(--text);
+  text-decoration: none;
+  padding: 10px 15px;
+  border-radius: 8px;
+  transition: var(--transition);
+
+  &:hover {
+    background: var(--primary);
+  }
+
+  &.active {
+    background: var(--primary);
+    color: wheat;
+  }
+}
