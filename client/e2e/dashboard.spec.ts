@@ -1,6 +1,8 @@
 import { test, expect } from '@playwright/test';
-
+const API_URL = 'http://localhost:3001/tickets';
 test.describe('Dashboard', () => {
+  
+
   test('loads Dashboard successfully', async ({ page }) => {
     // Expect a title "to contain" a substring.
     await page.goto('/');
@@ -10,7 +12,15 @@ test.describe('Dashboard', () => {
     await expect(page.getByTestId('statistics-critical')).toBeVisible();
   });
 
-  test('shows tickets on Dashboard', async ({ page }) => {
+  test('shows tickets on Dashboard', async ({ page, request }) => {
+    const createResponse = await request.post(API_URL, {
+      data: {
+        title: 'Dashboard Test ticket',
+        description: 'Ticket shown on dashboard',
+        priority: 'High',
+      },
+    });
+    expect(createResponse.ok()).toBeTruthy();
     // Expect a title "to contain" a substring.
     await page.goto('/');
     await expect(page.getByTestId('dashboard-content')).toBeVisible();
@@ -24,7 +34,7 @@ test.describe('Dashboard', () => {
     await page.getByTestId('ticketTitle').fill('Playwright Test');
     await page.getByTestId('ticketDescription').fill('Creaated with Playwright by me');
     await page.getByRole('combobox').selectOption('Critical');
-    await page.getByRole('button', { name: 'Create Ticket' }).click();
+    await page.getByTestId('create-ticket-button').click();
     const ticket = page.locator('.ticket-card').filter({ hasText: 'Playwright Test' }).last();
     await expect(ticket).toBeVisible();
   });
@@ -47,7 +57,7 @@ test.describe('Dashboard', () => {
     await page.getByTestId('ticketTitle').fill('Playwright Delete Test');
     await page.getByTestId('ticketDescription').fill('Creaated with Playwright by me');
     await page.getByRole('combobox').selectOption('Critical');
-    await page.getByRole('button', { name: 'Create Ticket' }).click();
+    await page.getByTestId('create-ticket-button').click();
     const ticket = page.locator('div', { hasText: 'Playwright Delete Test' }).last();
     await expect(ticket).toBeVisible();
     const deleteBtn = ticket.getByTestId(/^ticket-deleteBtn-/);
@@ -65,7 +75,7 @@ test.describe('Dashboard', () => {
     await page.getByTestId('ticketTitle').fill('Playwright Edit Test');
     await page.getByTestId('ticketDescription').fill('Creaated with Playwright by me');
     await page.getByRole('combobox').selectOption('Critical');
-    await page.getByRole('button', { name: 'Create Ticket' }).click();
+    await page.getByTestId('create-ticket-button').click();
     const ticket = page.locator('div', { hasText: 'Playwright Edit Test' }).last();
     await expect(ticket).toBeVisible();
     const editBtn = ticket.getByTestId(/^ticket-editBtn-/);
@@ -86,7 +96,15 @@ test.describe('Dashboard', () => {
     await expect(page.getByText('Playwright edit Test')).not.toBeVisible();
   });
 
-  test('changes ticket status', async ({ page }) => {
+  test('changes ticket status', async ({ page, request }) => {
+    const createResponse = await request.post(API_URL, {
+      data: {
+        title: 'Status Test ticket',
+        description: 'Ticket used for status zeszing',
+        priority: 'Medium',
+      },
+    });
+    expect(createResponse.ok()).toBeTruthy();
     await page.goto('/');
     const ticket = page.locator('.ticket-card').first();
     const statusLocator = ticket.getByText(/Status:/);

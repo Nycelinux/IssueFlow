@@ -46,7 +46,32 @@ Built with react, Node.js, Express, SQLite TypeScript, SQLite, Vitest and Playwr
 
 ## Project Structure
 
-Coming soon.
+```text
+Issueflow/
+├── client/
+|   ├── e2e/
+|   ├── src/
+|   |   ├── api/
+|   |   ├── components/
+|   |   ├── hooks/
+|   |   ├── layouts/
+|   |   ├── pages/
+|   |   ├── styles/
+|   |   ├── tests/
+|   |   └── types/
+|
+├── server/
+|   ├── src/
+|   |   ├── controllers
+|   |   ├── database
+|   |   ├── middleware
+|   |   ├── models
+|   |   ├── routes
+|   |   ├── services
+|   |   └── utils
+|
+└──playwright.cofig.ts
+```
 
 ## REST-API
 
@@ -61,23 +86,37 @@ Coming soon.
 
 ### clone repository
 
-Coming soon.
+git clone https://github.com/Nycelinux/IssueFlow.git
+cd IssueFlow
 
 ### Install dependencies
 
-Coming soon.
+```md
+## REST API
 
-### Strat development environment
+| Method | Endpoint       | Description     |
+| ------ | -------------- | --------------- |
+| GET    | `/tickets`     | Get all tickets |
+| GET    | `/tickets/:id` | Get a ticket    |
+| POST   | `/tickets`     | Create a ticket |
+| PUT    | `/tickets/:id` | Update a ticket |
+| DELETE | `/tickets/:id` | Delete a ticket |
+```
+
+### Start development environment
 
 npm run dev
 
 ## Testing:
 
-Coming soon.
-
 ### Unit and Component Tests
 
-Coming soon.
+The frontend is testes with Vitest.
+Tests cover:
+Coming soon
+
+npm run dev
+npm test -- --run
 
 ### End-to-End Testing
 

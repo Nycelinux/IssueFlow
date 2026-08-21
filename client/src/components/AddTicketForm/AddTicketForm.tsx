@@ -69,7 +69,10 @@ function AddTicketForm({
           </option>
         </select>
       </div>
-      <button type="submit" data-testId={testId}>
+      <button
+        type="submit"
+        data-testId={initialTicket ? 'save-ticket-button' : 'create-ticket-button'}
+      >
         {submitButtonText ?? (initialTicket ? 'Save Changes ' : 'Add Ticket')}
       </button>
     </form>

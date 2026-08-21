@@ -1,7 +1,8 @@
 {
   "scripts": {
     "dev": "concurrently \"npm run dev --prefix server\" \"npm run dev --prefix client\"",
-    "dev:e2e": "concurrently \"npm run dev:e2e --prefix server\" \"npm run dev --prefix client\""
+    "dev:e2e": "concurrently \"npm run dev:e2e --prefix server\" \"npm run dev --prefix client\"",
+    "reset:e2e": "npm run reset:e2e --prefix server"
   },
   "devDependencies": {
     "@playwright/test": "^1.62.1",
