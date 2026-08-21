@@ -1,8 +1,6 @@
 import { test, expect } from '@playwright/test';
 const API_URL = 'http://localhost:3001/tickets';
 test.describe('Dashboard', () => {
-  
-
   test('loads Dashboard successfully', async ({ page }) => {
     // Expect a title "to contain" a substring.
     await page.goto('/');
@@ -24,6 +22,13 @@ test.describe('Dashboard', () => {
     // Expect a title "to contain" a substring.
     await page.goto('/');
     await expect(page.getByTestId('dashboard-content')).toBeVisible();
+    const ticket = page.locator('div', { hasText: 'Dashboard Test ticket' }).last();
+    await expect(ticket).toBeVisible();
+    const deleteBtn = ticket.getByTestId(/^ticket-deleteBtn-/);
+    await deleteBtn.click();
+    const confirmDelete = await page.getByTestId('confirmDialog-delete');
+    await confirmDelete.click();
+    await expect(page.getByText('Dashboard Test ticket')).not.toBeVisible();
   });
 
   test('creates a new Ticket', async ({ page }) => {
@@ -37,6 +42,11 @@ test.describe('Dashboard', () => {
     await page.getByTestId('create-ticket-button').click();
     const ticket = page.locator('.ticket-card').filter({ hasText: 'Playwright Test' }).last();
     await expect(ticket).toBeVisible();
+    const deleteBtn = ticket.getByTestId(/^ticket-deleteBtn-/);
+    await deleteBtn.click();
+    const confirmDelete = await page.getByTestId('confirmDialog-delete');
+    await confirmDelete.click();
+    await expect(page.getByText('Playwright Test')).not.toBeVisible();
   });
 
   test('close creates a new Ticket modal', async ({ page }) => {
@@ -113,5 +123,11 @@ test.describe('Dashboard', () => {
     await expect(statusLocator).not.toHaveText(statusBefore!);
     const statusAfter = await statusLocator.textContent();
     expect(statusAfter).not.toBe(statusBefore);
+
+    const deleteBtn = ticket.getByTestId(/^ticket-deleteBtn-/);
+    await deleteBtn.click();
+    const confirmDelete = await page.getByTestId('confirmDialog-delete');
+    await confirmDelete.click();
+    await expect(page.getByText('Status Test ticket')).not.toBeVisible();
   });
 });
