@@ -1,7 +1,16 @@
 import { test, expect } from '@playwright/test';
-
+const API_URL = 'http://localhost:3001/tickets';
 test.describe('TicketDetails', () => {
-  test('opens ticket details', async ({ page }) => {
+  test('opens ticket details', async ({ page, request }) => {
+    const createResponse = await request.post(API_URL, {
+      data: {
+        title: 'Status Test ticket',
+        description: 'Ticket used for status zeszing',
+        priority: 'Medium',
+      },
+    });
+    expect(createResponse.ok()).toBeTruthy();
+    const createdTicket = await createResponse.json();
     await page.goto('/');
     await page.locator('.ticket-card').first().locator('a').click();
     const details = page.getByTestId('ticket-details');
@@ -9,9 +18,20 @@ test.describe('TicketDetails', () => {
     await expect(details.getByText(/Priority:/)).toBeVisible();
     await expect(details.getByText(/Status:/)).toBeVisible();
     await expect(details.getByText(/^ID$/)).toBeVisible();
+    await request.delete(`http://localhost:3001/tickets/${createdTicket.id}`);
   });
 
-  test('changes ticket status from ticket details', async ({ page }) => {
+  test('changes ticket status from ticket details', async ({ page, request }) => {
+    const createResponse = await request.post(API_URL, {
+      data: {
+        title: 'Status Test ticket',
+        description: 'Ticket used for status zeszing',
+        priority: 'Medium',
+      },
+    });
+    expect(createResponse.ok()).toBeTruthy();
+    const createdTicket = await createResponse.json();
+
     await page.goto('/');
     await page.locator('.ticket-card').first().locator('a').click();
     const details = page.getByTestId('ticket-details');
@@ -22,18 +42,39 @@ test.describe('TicketDetails', () => {
     const statusAfter = await status.textContent();
 
     expect(statusAfter).not.toBe(statusBefore);
+    await request.delete(`http://localhost:3001/tickets/${createdTicket.id}`);
   });
 
-  test('returns to dashboard from ticket details', async ({ page }) => {
+  test('returns to dashboard from ticket details', async ({ page, request }) => {
+    const createResponse = await request.post(API_URL, {
+      data: {
+        title: 'Status Test ticket',
+        description: 'Ticket used for status zeszing',
+        priority: 'Medium',
+      },
+    });
+    expect(createResponse.ok()).toBeTruthy();
+    const createdTicket = await createResponse.json();
     await page.goto('/');
     const ticket = page.locator('.ticket-card').last().getByTestId('ticket-card-link');
     await ticket.click();
     await expect(page.getByTestId('ticket-details')).toBeVisible();
     await page.getByRole('link', { name: /back to dashboard/i }).click();
     await expect(page.getByTestId('dashboard')).toBeVisible();
+    await request.delete(`http://localhost:3001/tickets/${createdTicket.id}`);
   });
 
-  test('deletes ticket from ticket details', async ({ page }) => {
+  test('deletes ticket from ticket details', async ({ page, request }) => {
+    const createResponse = await request.post(API_URL, {
+      data: {
+        title: 'Status Test ticket',
+        description: 'Ticket used for status zeszing',
+        priority: 'Medium',
+      },
+    });
+    expect(createResponse.ok()).toBeTruthy();
+    const createdTicket = await createResponse.json();
+
     await page.goto('/');
 
     await page.getByTestId('newTicket-button').click();
@@ -58,5 +99,6 @@ test.describe('TicketDetails', () => {
     if (title) {
       await expect(page.getByText(title.trim())).not.toBeVisible();
     }
+    await request.delete(`http://localhost:3001/tickets/${createdTicket.id}`);
   });
 });
