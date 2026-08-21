@@ -1,12 +1,12 @@
 import sqlite3 from "sqlite3";
-
+const dbPath = process.env.DB_PATH || "./issueflow.db";
 const sqlite = sqlite3.verbose();
-export const db = new sqlite.Database("./issueflow.db", (error) => {
+export const db = new sqlite.Database(dbPath, (error) => {
   if (error) {
     console.error(error.message);
     return;
   }
-  console.log("Connected to sqlite");
+  console.log(`Connected to sqlite db: ${dbPath}`);
 });
 
 db.serialize(() => {

@@ -148,3 +148,8 @@ vite.config.ts.timestamp-*
 /blob-report/
 /playwright/.cache/
 /playwright/.auth/
+
+# SQLite databases
+*.db
+*.db-shm
+*.db-wal
