@@ -9,7 +9,8 @@
     "dev": "tsx watch src/app.ts",
     "dev:e2e": "cross-env DB_PATH=issueflow-test.db tsx watch src/app.ts",
     "reset:e2e": "node scripts/resetE2EDB.js",
-    "seed:user": "tsx src/seedUser.ts"
+    "seed:user": "tsx src/seedUser.ts",
+    "seed:user:e2e": "cross-env DB_PATH=issueflow-test.db tsx src/seedUser.ts"
   },
   "keywords": [],
   "author": "",
