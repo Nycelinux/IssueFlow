@@ -30,6 +30,23 @@ db.serialize(() => {
       }
     },
   );
+  db.run(
+    `
+        CREATE TABLE IF NOT EXISTS users (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        username TEXT NOT NULL UNIQUE,
+        passwordHash TEXT NOT NULL,
+        role TEXT NOT NULL
+        )
+        `,
+    (error) => {
+      if (error) {
+        console.error(error.message);
+      } else {
+        console.log("Table tickets ready");
+      }
+    },
+  );
 });
 
 db.all("SELECT name FROM sqlite_master WHERE type='table'", (error, rows) => {
