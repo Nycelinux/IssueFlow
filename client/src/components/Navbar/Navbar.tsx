@@ -29,9 +29,13 @@ function Navbar() {
     <header className="navbar">
       <h1>{title}</h1>
       <div className="navbar-action">
-        {user && <span className="navbar-user">{user.username}</span>}
+        {user && (
+          <span className="navbar-user">
+            {user.username} ({user.role})
+          </span>
+        )}
 
-        {showNewTicketButton && (
+        {showNewTicketButton && user && (user.role === 'Admin' || user.role === 'Developer') && (
           <button onClick={openModal} data-testId="newTicket-button">
             {' '}
             + New Ticket

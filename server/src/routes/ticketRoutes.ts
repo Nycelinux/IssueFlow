@@ -7,14 +7,28 @@ import {
   updateTicket,
   deleteTicket,
 } from "../controllers/ticketController.js";
+import { authenticateToken } from "../middleware/authMiddleware.js";
+import { requireRole } from "../middleware/roleMiddleware.js";
 
 const router = Router();
 
-router.get("/", getTickets);
+router.get("/", authenticateToken, getTickets);
 router.get("/dashboard", getTickets);
-router.post("/", validateTicket, createTicket);
-router.get("/:id", getSingleTicket);
-router.put("/:id", validateTicket, updateTicket);
-router.delete("/:id", deleteTicket);
+router.post(
+  "/",
+  authenticateToken,
+  requireRole("Admin", "Developer"),
+  validateTicket,
+  createTicket,
+);
+router.get("/:id", authenticateToken, getSingleTicket);
+router.put(
+  "/:id",
+  authenticateToken,
+  requireRole("Admin", "Developer"),
+  validateTicket,
+  updateTicket,
+);
+router.delete("/:id", authenticateToken, requireRole("Admin"), deleteTicket);
 
 export default router;
